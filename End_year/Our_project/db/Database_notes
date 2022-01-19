@@ -1,0 +1,6 @@
+// These are just commands when i created the databse to change things easier
+
+CREATE TABLE users (
+user_name VARCHAR(10),
+password VARCHAR(10),
+PRIMARY KEY(user_name));
