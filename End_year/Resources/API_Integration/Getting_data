@@ -1,0 +1,20 @@
+There are two methods i found. (follow the json link and that give the data for that product, check it out)
+
+JSON data for a product:
+https://live.icecat.biz/api/?UserName=openIcecat-live&Language=en&Brand=hp&ProductCode=259J1EA#ABB 
+
+XML data for a product
+https://data.icecat.biz/xml_s3/xml_server3.cgi?prod_id=RJ459AV;vendor=hp;lang=en;output=productxml
+
+
+//////
+The JSON way looks the easiest, as doesnt ask for any password
+- Takes two main arguments
+- Brand : the brand name (in the above is HP)
+- product code : this is indicated on the icecat product page "product code" (in the above is 259J1EA#ABB)
+
+//////
+So a method i think will work is getting the brand name and product code from the user
+then placing that into the url string, then we get our JSON data
+
+Then we just need to get the data we want out of it
