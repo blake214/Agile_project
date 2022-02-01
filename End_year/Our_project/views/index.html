@@ -1,3 +1,19 @@
 <html>
-    Login Page
+    <h1>Index Page</h1>
+    <% if (userSessionId) { %>
+        <form name="logout" action="/logout" method="POST">
+            <input type="submit" value="Logout">
+        </form>
+    <% } else {%>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    <% }%>
+    <div style="background-color:grey;">
+        <a href="/">index</a>
+        <a href="/user">user</a>
+        <a href="/product">product</a>
+        <a href="/catalogue">catalogue</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    </div>
 </html>

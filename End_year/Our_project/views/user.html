@@ -1,3 +1,64 @@
 <html>
-    User Page
+    <h1>User Page</h1>
+    <p>Logged in as: <%= username %></p>
+
+    <form style="background-color:grey;" name="user_details" action="/user_details" method="POST">
+        <label>User Details</label><br>
+        <!-- With these placeholders, they will either be explination place holder like below, or their current details -->
+        <!-- The username doesnt need to be a feild though we need to know the user the request belongs too? -->
+        <input type="text" name="username" placeholder="username" required><br>
+        <input type="text" name="company_name_short" placeholder="short company name" required><br>
+        <input type="text" name="company_name_long" placeholder="long company name" required><br>
+        <input type="text" name="phone_number" placeholder="phone number" required><br>
+        <input type="text" name="address" placeholder="address" required><br>
+        <input type="submit" value="Update">
+    </form>
+    <form style="background-color:grey;" name="user_catalogue_theme" action="/user_catalogue_theme" method="POST">
+        <label>User Catalogue Theme</label><br>
+        <!-- With these placeholders, they will either be explination place holder like below, or their current details -->
+        <!-- The username doesnt need to be a feild though we need to know the user the request belongs too? -->
+        <input type="text" name="username" placeholder="username" required><br>
+        <!-- Colors sent will be a string for RGB -->
+        <input type="text" name="color_1" placeholder="color 1" required><br>
+        <input type="text" name="color_2" placeholder="color 2" required><br>
+        <!-- We will need to send a img somehow, Look into 'multer' library, there youtube video on it "Uploading an Image | Creating a REST API with Node.js" -->
+        <input type="text" name="logo" placeholder="logo" required><br>
+        <input type="submit" value="Update">
+    </form>
+    <!-- This table will populate dynamically from the parsed JSON object -->
+    <table style="background-color:grey;">
+        <tr>
+            <th>Product code</th>
+            <th>Product name</th>
+            <th>Remove</th>
+        </tr>
+        <tr>
+            <td>Product_1</td>
+            <td>Product_1_name</td>
+            <!-- Here we will have buttons, and event listener in JS to add to the 'remove array' -->
+            <td>Remove</td>
+        </tr>
+        <tr>
+            <td>Product_2</td>
+            <td>Product_2_name</td>
+            <!-- Here we will have buttons, and event listener in JS to add to the 'remove array' -->
+            <td>Remove</td>
+        </tr>
+    </table>
+    <!-- This form i think will store the details in an array locally -->
+    <form style="background-color:grey;" name="add_product">
+        <label>User Products</label><br>
+        <input type="text" name="product_code" placeholder="product_code" required><br>
+        <input type="text" name="product_brand" placeholder="product_brand" required><br>
+        <input type="submit" value="Add Product">
+    </form>
+    
+    <!-- Here we will post with event listener in JS, we will send both the 'added' and 'removed' data -->
+    <form style="background-color:grey;" name="update" action="/update" method="POST">
+        <input type="submit" value="Update">
+    </form>
+
+    <form style="background-color:grey;" name="logout" action="/logout" method="POST">
+        <input type="submit" value="Logout">
+    </form>
 </html>
