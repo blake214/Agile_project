@@ -69,3 +69,5 @@ app.engine("html", require("ejs").renderFile);
 // To run server with nodemon
 // 1) Start the server in the terminal - npm run dev
 // 2) Go to browser and enter the url 'localhost:port' where port will be the port number
+
+// If port doesnt want to terminate: run 'kill $(lsof -t -i:8082)' for linux

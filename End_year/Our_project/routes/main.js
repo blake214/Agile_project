@@ -22,14 +22,19 @@ module.exports = function (app) {
     app.get("/", function (req, res) {
         // Here we getting the session id (will be undefind if not logged in)
         const userId = req.session.userId;
+        console.log(userId);
         // Here we parsing the session id to the template page
         res.render("index.html", {userSessionId: userId});
     });
     app.get("/user", redirectLogin, function (req, res) {
-        // Here we getting the username thats with the session id
-        const user = users.find(user => user.id === req.session.userId)
-        // Here we parsing the username to the template
-        res.render("user.html", {username: user.username})
+        let dataset = [req.session.userId];
+        let sqlquery = "SELECT * FROM users WHERE id = ?";
+        // Here we getting the username relating to the id in the databse
+        db.get(sqlquery, dataset, (err, result) => {
+            if (err) return console.log("error");
+            // We sending this username to the template
+            res.render("user.html", {username: result['username']})
+        })
     });
     app.get("/catalogue", function (req, res) {
         res.render("catalogue.html")
@@ -54,43 +59,59 @@ module.exports = function (app) {
         const password = req.body.password
         // Here we checking that stuff has been submitted
         if (username && password){
-            /**Here we searching our array of credentials
-             * So if there is a username and password match, user gets populated
-             * else will be undefined
-             */
-            const user = users.find(
-                user => user.username === username && user.password === password
-            )
-            // If user is populated we create our session id and redirect to the user page
-            if (user){
-                req.session.userId = user.id
-                return res.redirect('/user');
-            }
+            // Should do promises in here but not too sure how, dont think a nested query is correct, this works though
+            let dataset_1 = [username, password];
+            let dataset_2 = [username];
+            let sqlquery_1 = "SELECT EXISTS(SELECT * FROM users WHERE username = ? AND password = ?)";
+            let sqlquery_2 = "SELECT * FROM users WHERE username = ?";
+            
+            // Here we querying if there is a match for the username and password
+            db.get(sqlquery_1, dataset_1, (err, result) => {
+                if (err) return console.log("error");
+                // If there is a match
+                if(Object.values(result)[0]){
+                    // Here we query the matches id
+                    db.get(sqlquery_2, dataset_2, (err, result) => {
+                        if (err) return console.log("error");
+                        // Here we creating our session id
+                        req.session.userId = result['id'];
+                        return res.redirect('/user');
+                    })
+                }else return res.redirect('/login');
+            });
         }
-        // else back to login page
-        return res.redirect('/login')
     });
     app.post("/register", redirectUser, function (req, res) {
         const username = req.body.username
         const password = req.body.password
         if (username && password){
-            // Here we checking if there is a username that already exists as what user put in
-            const exists = users.some(user => user.username === username)
-            if (!exists){
-                // Here we creating an object to push to our credentials array
-                const user = {
-                    id:users.length+1,
-                    username,
-                    password
-                }
-                users.push(user)
-                // Here we create our session id and redirect user to the user page
-                req.session.userId = user.id
-                return res.redirect('/user')
-            } 
+            // Should do promises in here but not too sure how, dont think a nested query is correct, this works though
+            let dataset_1 = [username];
+            let dataset_2 = [username, password];
+            let dataset_3 = [username];
+            let sqlquery_1 = "SELECT EXISTS(SELECT * FROM users WHERE username = ?)";
+            let sqlquery_2 = "INSERT INTO users (username, password)VALUES(?,?)";
+            let sqlquery_3 = "SELECT * FROM users WHERE username = ?";
+
+            // Here we checking if there is a user with the same username already in the database
+            db.get(sqlquery_1, dataset_1, (err, result) => {
+                if (err) return console.log("error");
+                // If there is NOT a match
+                if(!Object.values(result)[0]){
+                    // Here we adding the user to the database
+                    db.run(sqlquery_2, dataset_2, (err, result) => {
+                        if (err) return console.log("error");
+                        console.log("user added")
+                        // Here we querying the database for the new id, and assigning the session id
+                        db.get(sqlquery_3, dataset_3, (err, result) => {
+                            if (err) return console.log("error");
+                            req.session.userId = result['id'];
+                            return res.redirect('/user')
+                        })
+                    })
+                }else return res.redirect('/register');
+            });
         }
-        // else back to register page
-        return res.redirect('/register')
     });
     app.post("/logout", redirectLogin, function (req, res) {
         // This is a function that terminates the session
