@@ -27,17 +27,72 @@ module.exports = function (app) {
         res.render("index.html", {userSessionId: userId});
     });
     app.get("/user", redirectLogin, function (req, res) {
-        let dataset = [req.session.userId];
-        let sqlquery = "SELECT * FROM users WHERE id = ?";
+        let dataset_1 = [req.session.userId];
+        let sqlquery_1 = "SELECT * FROM users WHERE id = ?";
         // Here we getting the username relating to the id in the databse
-        db.get(sqlquery, dataset, (err, result) => {
+        db.get(sqlquery_1, dataset_1, (err, result) => {
             if (err) return console.log("error");
-            // We sending this username to the template
-            res.render("user.html", {username: result['username']})
+            let username = result['username'];
+            
+            // Here we getting the users details
+            let dataset_2 = [req.session.userId];
+            let sqlquery_2 = "SELECT * FROM user_details WHERE id = ?";
+            db.get(sqlquery_2, dataset_2, (err, result) => {
+                if (err) return console.log("error");
+                // If the user has no details we parse an empty object
+                let user_details_a = {
+                    company_name_short: null,
+                    company_name_long: null,
+                    phone_number: null,
+                    address: null,
+                    color_1: null,
+                    color_2: null,
+                    test: null,
+                    logo_url: null
+                }
+                // else we parse the details
+                if(result) user_details_a = result;
+                
+                // Here we getting the users products
+                let dataset_3 = [req.session.userId];
+                let sqlquery_3 = "SELECT products.product_name, products.product_code FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_id = products.id WHERE users.id == ?";
+                db.all(sqlquery_3, dataset_3, (err, result) => {
+                    if (err) return console.log("error");
+                    let products = result;
+                    res.render("user.html", {username: username, user_details: user_details_a, user_products: products})
+                })
+            })
         })
     });
     app.get("/catalogue", function (req, res) {
-        res.render("catalogue.html")
+        // Here we getting the users details
+        let dataset_2 = [req.session.userId];
+        let sqlquery_2 = "SELECT * FROM user_details WHERE id = ?";
+        db.get(sqlquery_2, dataset_2, (err, result) => {
+            if (err) return console.log("error");
+            // If the user has no details we parse an empty object
+            let user_details_a = {
+                company_name_short: null,
+                company_name_long: null,
+                phone_number: null,
+                address: null,
+                color_1: null,
+                color_2: null,
+                test: null,
+                logo_url: null
+            }
+            // else we parse the details
+            if(result) user_details_a = result;
+
+            // // Here we getting the users products
+            let dataset_3 = [req.session.userId];
+            let sqlquery_3 = "SELECT products.product_name, products.product_brand, products.product_description_short FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_id = products.id WHERE users.id == ?";
+            db.all(sqlquery_3, dataset_3, (err, result) => {
+                if (err) return console.log("error");
+                let products = result;
+                res.render("catalogue.html", {user_details: user_details_a, user_products: products})
+            })
+        })
     });
     app.get("/product", function (req, res) {
         res.render("product.html")
@@ -122,6 +177,60 @@ module.exports = function (app) {
             // Redirects back to the login page
             res.redirect('/login')
         })
+    });
+    app.post("/user_details", redirectLogin, function (req, res) {
+        let sqlQuery_concatenation = "";
+        let somethingToCchanged = false;
+        /**Below we checking if feilds have been changed
+         * if they changed we concatenate the change into the query string
+         * as well as note these has been a change
+         */
+        if (req.body.phone_number) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "phone_number = '" + req.body.phone_number + "'";
+            somethingToCchanged = true;
+        };
+        if (req.body.address) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "address = '" + req.body.address + "'";
+            somethingToCchanged = true;
+        };
+        if (req.body.company_name_short) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "company_name_short = '" + req.body.company_name_short + "'";
+            somethingToCchanged = true;
+        };
+        if (req.body.company_name_long) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "company_name_long = '" + req.body.company_name_long + "'";
+            somethingToCchanged = true;
+        };
+        if (req.body.color_1) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "color_1 = '" + req.body.color_1 + "'";
+            somethingToCchanged = true;
+        };
+        if (req.body.color_2) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "color_2 = '" + req.body.color_2 + "'";
+            somethingToCchanged = true;
+        };
+        if (req.body.logo_url) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "logo_url = '" + req.body.logo_url + "'";
+            somethingToCchanged = true;
+        };
+
+        // If there has been a change we update the database
+        if (somethingToCchanged) {
+            let dataset_1 = [req.session.userId];
+            let sqlquery_1 = "UPDATE user_details SET "+ sqlQuery_concatenation +" WHERE id == ?";
+            db.run(sqlquery_1, dataset_1 , (err, result) => {
+                if (err) return console.log("error");
+                console.log("details updated");
+                return res.redirect('/user');
+            })
+        } else return res.redirect('/user');
     });
     ////////////////////// Post Requests
 }

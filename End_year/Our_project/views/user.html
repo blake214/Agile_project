@@ -4,25 +4,18 @@
 
     <form style="background-color:grey;" name="user_details" action="/user_details" method="POST">
         <label>User Details</label><br>
-        <!-- With these placeholders, they will either be explination place holder like below, or their current details -->
-        <!-- The username doesnt need to be a feild though we need to know the user the request belongs too? -->
-        <input type="text" name="username" placeholder="username" required><br>
-        <input type="text" name="company_name_short" placeholder="short company name" required><br>
-        <input type="text" name="company_name_long" placeholder="long company name" required><br>
-        <input type="text" name="phone_number" placeholder="phone number" required><br>
-        <input type="text" name="address" placeholder="address" required><br>
+        <input type="text" id="company_name_short" name="company_name_short" placeholder="short company name"><br>
+        <input type="text" id="company_name_long" name="company_name_long" placeholder="long company name"><br>
+        <input type="text" id="phone_number" name="phone_number" placeholder="phone number"><br>
+        <input type="text" id="address" name="address" placeholder="address"><br>
         <input type="submit" value="Update">
     </form>
-    <form style="background-color:grey;" name="user_catalogue_theme" action="/user_catalogue_theme" method="POST">
+    <form style="background-color:grey;" name="user_catalogue_theme" action="/user_details" method="POST">
         <label>User Catalogue Theme</label><br>
-        <!-- With these placeholders, they will either be explination place holder like below, or their current details -->
-        <!-- The username doesnt need to be a feild though we need to know the user the request belongs too? -->
-        <input type="text" name="username" placeholder="username" required><br>
-        <!-- Colors sent will be a string for RGB -->
-        <input type="text" name="color_1" placeholder="color 1" required><br>
-        <input type="text" name="color_2" placeholder="color 2" required><br>
+        <input type="text" id="color_1" name="color_1" placeholder="color 1"><br>
+        <input type="text" id="color_2" name="color_2" placeholder="color 2"><br>
         <!-- We will need to send a img somehow, Look into 'multer' library, there youtube video on it "Uploading an Image | Creating a REST API with Node.js" -->
-        <input type="text" name="logo" placeholder="logo" required><br>
+        <input type="text" id="logo_url" name="logo_url" placeholder="logo"><br>
         <input type="submit" value="Update">
     </form>
     <!-- This table will populate dynamically from the parsed JSON object -->
@@ -32,18 +25,15 @@
             <th>Product name</th>
             <th>Remove</th>
         </tr>
+
+        <% for (let i = 0; i < user_products.length; i++){ %>
         <tr>
-            <td>Product_1</td>
-            <td>Product_1_name</td>
+            <td><%= user_products[i].product_code %></td>
+            <td><%= user_products[i].product_name %></td>
             <!-- Here we will have buttons, and event listener in JS to add to the 'remove array' -->
             <td>Remove</td>
         </tr>
-        <tr>
-            <td>Product_2</td>
-            <td>Product_2_name</td>
-            <!-- Here we will have buttons, and event listener in JS to add to the 'remove array' -->
-            <td>Remove</td>
-        </tr>
+        <% } %>
     </table>
     <!-- This form i think will store the details in an array locally -->
     <form style="background-color:grey;" name="add_product">
@@ -61,4 +51,22 @@
     <form style="background-color:grey;" name="logout" action="/logout" method="POST">
         <input type="submit" value="Logout">
     </form>
+
+    <!-- This a script to replace placeholders in the forms, NOTE element ids need to match parsed objects keys -->
+    <script>
+        let p = <%- JSON.stringify(user_details) %>;
+        for (const key in p){
+            var e = document.getElementById(key);
+            if (e && p[key] != 'null' && p[key] != null) e.setAttribute('placeholder', p[key]);
+        }
+    </script>
+    <div style="background-color:grey;">
+        <a href="/">index</a>
+        <a href="/user">user</a>
+        <a href="/product">product</a>
+        <a href="/catalogue">catalogue</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    </div>
 </html>
+

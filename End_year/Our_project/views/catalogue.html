@@ -1,5 +1,19 @@
 <html>
     <h1>Catalogue Page</h1>
+
+    <%= user_details.company_name_short %><br>
+    <%= user_details.company_name_long %><br>
+    <%= user_details.phone_number %><br>
+    <%= user_details.address %><br>
+    <%= user_details.color_1 %><br>
+    <%= user_details.color_2 %><br>
+    <%= user_details.logo %><br>
+    <br>
+    <p>Products:</p>
+    <% for (let i = 0; i < user_products.length; i++){ %>
+        <%= user_products[i].product_name %>, <%= user_products[i].product_code %> <br>
+    <% } %>
+
     <div style="background-color:grey;">
         <a href="/">index</a>
         <a href="/user">user</a>
