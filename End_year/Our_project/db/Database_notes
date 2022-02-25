@@ -29,14 +29,14 @@ VALUES('2','aa','bb','cc','dd','ee','ff','gg');
 
 CREATE TABLE products (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
-product_code VARCHAR(10),
-product_name VARCHAR(10),
-product_description_short VARCHAR(10),
-product_description_long VARCHAR(10),
-product_img_urls VARCHAR(10),
-product_category VARCHAR(10),
-product_brand VARCHAR(10),
-product_specs VARCHAR(10));
+product_code TEXT,
+product_name TEXT,
+product_description_short TEXT,
+product_description_long TEXT,
+product_img_urls TEXT,
+product_category TEXT,
+product_brand TEXT,
+product_specs TEXT);
 
 INSERT INTO products (product_code,product_name)VALUES('xxx','product_1');
 INSERT INTO products (product_code,product_name)VALUES('qqq','product_2');
