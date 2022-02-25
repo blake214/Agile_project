@@ -1,11 +1,5 @@
 const https = require('https')
 
-// store constant API variables here
-const options = {
-  hostname: 'live.icecat.biz',
-  method: 'GET'
-}
-
 function constructProductDataObject (responseData, productCode) {
   const product = {
     product_code: productCode,
@@ -28,33 +22,56 @@ function constructProductDataObject (responseData, productCode) {
 }
 
 function apiRequest (brand, productCode) {
-  // populate URL query string with the respective brand and product code given from user
-  options.path = `/api?UserName=openIcecat-live&Language=en&Brand=${brand}&ProductCode=${productCode}`
-  // make the request with a callback
-  https.get(options, res => {
-    const data = [] // store response buffer chunks for later concatenation
+  return new Promise((resolve, reject) => {
+    // store API variables here
+    const options = {
+      hostname: 'live.icecat.biz',
+      method: 'GET', // populate URL query string with the respective brand and product code given from user
+      path: `/api?UserName=openIcecat-live&Language=en&Brand=${brand}&ProductCode=${productCode}`
+    }
+    const req = https.request(options, (res) => {
+      if (res.statusCode < 200 || res.statusCode >= 300) {
+        return reject(new Error('statusCode=' + res.statusCode))
+      }
+      let body = [] // store response buffer chunks for later concatenation
 
-    // handle response data
-    res.on('data', chunk => {
-      data.push(chunk)
+      // handle response data
+      res.on('data', chunk => {
+        body.push(chunk)
+      })
+      res.on('end', () => {
+        try {
+          body = JSON.parse(Buffer.concat(body).toString())
+          // for debugging purposes
+          // const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date'
+          // console.log('Status Code:', res.statusCode)
+          // console.log('Date in Response header:', headerDate)
+          // console.log('Response: ')
+          // console.log(response)
+        } catch (e) {
+          reject(e)
+        }
+        resolve(body)
+      })
     })
-
-    res.on('end', () => {
-      const response = JSON.parse(Buffer.concat(data).toString())
-
-      // for debugging purposes
-      // const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date'
-      // console.log('Status Code:', res.statusCode)
-      // console.log('Date in Response header:', headerDate)
-      // console.log('Response: ')
-      // console.log(response)
-
-      // get the relevant data from the API response to return a product object (to be inserted into the DB later)
-      return constructProductDataObject(response, productCode)
+    req.on('error', (e) => {
+      reject(e.message)
     })
-  }).on('error', err => {
-    console.log('Error: ', err.message)
+    // send the request
+    req.end()
   })
 }
 
-apiRequest('hp', '259J1EA#ABB')
+function getProduct (brand, productCode) {
+  return apiRequest(brand, productCode).then((data) => {
+    return constructProductDataObject(data, productCode)
+  })
+}
+
+function insertProductToDB (brand, productCode) {
+  getProduct(brand, productCode).then((productObject) => {
+    console.log(productObject)
+  })
+}
+
+insertProductToDB('hp', '259J1EA#ABB')
