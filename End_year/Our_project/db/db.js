@@ -20,7 +20,7 @@ function insertProductToDB (brand, productCode) {
       if (err) {
         console.log(err.message)
       } else {
-        console.log(`Rows affected: ${this.changes}`)
+        console.log(`insertProductToDB :: Rows affected: ${this.changes}`)
       }
       db.close()
     })
