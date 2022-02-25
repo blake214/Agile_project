@@ -15,7 +15,7 @@ function constructProductDataObject (responseData, productCode) {
     product_img_urls: responseData.data.Gallery.map((element, index) => ({ ['img_' + index]: element.Pic })),
     product_category: responseData.data.GeneralInfo.Category.Name.Value,
     product_brand: responseData.data.GeneralInfo.Brand,
-    product_specs: {}
+    product_specs: {} // populated in the following for loop for readability's sake
   }
   for (const group of responseData.data.FeaturesGroups) {
     for (const feature of group.Features) {
