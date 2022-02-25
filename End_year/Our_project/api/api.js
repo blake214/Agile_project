@@ -6,30 +6,38 @@ const options = {
   method: 'GET'
 }
 
+function constructProductDataObject (responseData) {
+  return {}
+}
+
 function apiRequest (brand, productCode) {
   // populate URL query string with the respective brand and product code given from user
   options.path = `/api?UserName=openIcecat-live&Language=en&Brand=${brand}&ProductCode=${productCode}`
+  let response
   // make the request with a callback
   https.get(options, res => {
-    const chunks = [] // store response buffer chunks for later concatenation
+    const data = [] // store response buffer chunks for later concatenation
     const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date'
     console.log('Status Code:', res.statusCode)
     console.log('Date in Response header:', headerDate)
 
     // handle response data
     res.on('data', chunk => {
-      chunks.push(chunk)
+      data.push(chunk)
     })
 
     res.on('end', () => {
       console.log('Response: ')
-      const data = JSON.parse(Buffer.concat(chunks).toString())
+      response = JSON.parse(Buffer.concat(data).toString())
 
-      console.log(data)
+      // for debug purposes
+      // console.log(response)
     })
   }).on('error', err => {
     console.log('Error: ', err.message)
   })
+  return response
 }
 
-apiRequest('hp', '259J1EA#ABB')
+const response = apiRequest('hp', '259J1EA#ABB')
+constructProductDataObject(response)
