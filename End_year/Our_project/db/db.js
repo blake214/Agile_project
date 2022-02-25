@@ -18,7 +18,10 @@ function insertProductToDB (brand, productCode) {
     ]
     const data = productFields.map(field => productObject[field])
     db.run(`INSERT INTO products (${productFields.join(', ')}) VALUES (${productFields.map(_ => '?').join(',')})`, data, function (err) {
-
+      if (err) {
+        return console.log(err.message)
+      }
+      console.log(`Rows affected: ${this.changes}`)
     })
   })
 }
