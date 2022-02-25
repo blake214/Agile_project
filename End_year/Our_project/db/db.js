@@ -1,11 +1,9 @@
 const api = require('./../api/api')
 const sqlite3 = require('sqlite3').verbose()
 
-const db = new sqlite3.Database('./easy-catalogue.db')
-
 function insertProductToDB (brand, productCode) {
+  const db = new sqlite3.Database('./easy-catalogue.db')
   api.getProduct(brand, productCode).then((productObject) => {
-    console.log(productObject)
     const productFields = [
       'product_code',
       'product_name',
@@ -19,13 +17,13 @@ function insertProductToDB (brand, productCode) {
     const data = productFields.map(field => productObject[field])
     db.run(`INSERT INTO products (${productFields.join(', ')}) VALUES (${productFields.map(_ => '?').join(',')})`, data, function (err) {
       if (err) {
-        return console.log(err.message)
+        console.log(err.message)
+      } else {
+        console.log(`Rows affected: ${this.changes}`)
       }
-      console.log(`Rows affected: ${this.changes}`)
+      db.close()
     })
   })
 }
 
 insertProductToDB('hp', '259J1EA#ABB')
-
-db.close()
