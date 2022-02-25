@@ -15,7 +15,8 @@ function insertProductToDB (brand, productCode) {
       'product_specs'
     ]
     const data = productFields.map(field => productObject[field])
-    db.run(`INSERT INTO products (${productFields.join(', ')}) VALUES (${productFields.map(_ => '?').join(',')})`, data, function (err) {
+    const sql = `INSERT INTO products (${productFields.join(', ')}) VALUES (${productFields.map(_ => '?').join(',')})`
+    db.run(sql, data, function (err) {
       if (err) {
         console.log(err.message)
       } else {
