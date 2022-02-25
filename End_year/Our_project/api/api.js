@@ -1,5 +1,11 @@
 const https = require('https')
 
+/**
+ * Constructs a Product object that can be later inserted into the DB, from the raw response JSON
+ * @param   {Object}  responseData The raw response data object as returned in apiRequest Promise
+ * @param   {String } productCode  The product code passed to apiRequest, so as to embed it within the Product object
+ * @returns {Object}               Product object with respective keys pertaining to `project` table fields in the DB
+ */
 function constructProductDataObject (responseData, productCode) {
   const product = {
     product_code: productCode,
@@ -21,6 +27,12 @@ function constructProductDataObject (responseData, productCode) {
   return product
 }
 
+/**
+ * Makes the API request to Icecat API, to obtain the respective product pertaining to the given brand and code
+ * @param   {String} brand       Icecat Product brand (e.g. 'hp')
+ * @param   {String} productCode Icecat Product code (e.g. '259J1EA#ABB')
+ * @returns {Promise<unknown>}   Promise of API Response (if no errors occured)
+ */
 function apiRequest (brand, productCode) {
   return new Promise((resolve, reject) => {
     // store API variables here
@@ -62,16 +74,17 @@ function apiRequest (brand, productCode) {
   })
 }
 
+/**
+ * Utility function to chain the process of making an Icecat API request and constructing a Product object from it
+ * @param   {String} brand       refer to `apiRequest` docstring
+ * @param   {String} productCode refer to `apiRequest` function docstring
+ * @returns {Promise<Object>}    refer to `constructProductDataObject` function docstring
+ */
 function getProduct (brand, productCode) {
   return apiRequest(brand, productCode).then((data) => {
     return constructProductDataObject(data, productCode)
   })
 }
 
-function insertProductToDB (brand, productCode) {
-  getProduct(brand, productCode).then((productObject) => {
-    console.log(productObject)
-  })
-}
-
-insertProductToDB('hp', '259J1EA#ABB')
+// Export the utility function getProduct for usage in outside modules (e.g. use it in the context of DB functions)
+module.exports = { getProduct }
