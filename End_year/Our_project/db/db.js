@@ -1,7 +1,7 @@
 const api = require('./../api/api')
 const sqlite3 = require('sqlite3').verbose()
 
-let db = new sqlite3.Database('./easy-catalogue.db')
+const db = new sqlite3.Database('./easy-catalogue.db')
 
 function insertProductToDB (brand, productCode) {
   api.getProduct(brand, productCode).then((productObject) => {
