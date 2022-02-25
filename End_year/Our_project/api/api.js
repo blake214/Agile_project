@@ -12,7 +12,7 @@ function constructProductDataObject (responseData, productCode) {
     product_name: responseData.data.GeneralInfo.Title,
     product_description_short: responseData.data.GeneralInfo.Description.MiddleDesc,
     product_description_long: responseData.data.GeneralInfo.Description.LongDesc,
-    product_img_urls: responseData.data.Gallery.map((element, index) => ({ ['img_' + index]: element.Pic })),
+    product_img_urls: JSON.stringify(responseData.data.Gallery.map((element, index) => ({ ['img_' + index]: element.Pic }))),
     product_category: responseData.data.GeneralInfo.Category.Name.Value,
     product_brand: responseData.data.GeneralInfo.Brand,
     product_specs: {} // populated in the following for loop for readability's sake
@@ -22,6 +22,7 @@ function constructProductDataObject (responseData, productCode) {
       product.product_specs[feature.Feature.Name.Value] = feature.Value
     }
   }
+  product.product_specs = JSON.stringify(product.product_specs)
   // for debugging purposes
   // console.log(product)
   return product
