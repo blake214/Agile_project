@@ -31,14 +31,14 @@ module.exports = function (app) {
         let sqlquery_1 = "SELECT * FROM users WHERE id = ?";
         // Here we getting the username relating to the id in the databse
         db.get(sqlquery_1, dataset_1, (err, result) => {
-            if (err) return console.log("error");
+            if (err) return console.log("error_1");
             let username = result['username'];
             
             // Here we getting the users details
             let dataset_2 = [req.session.userId];
             let sqlquery_2 = "SELECT * FROM user_details WHERE id = ?";
             db.get(sqlquery_2, dataset_2, (err, result) => {
-                if (err) return console.log("error");
+                if (err) return console.log("error_2");
                 // If the user has no details we parse an empty object
                 let user_details_a = {
                     company_name_short: null,
@@ -55,9 +55,10 @@ module.exports = function (app) {
                 
                 // Here we getting the users products
                 let dataset_3 = [req.session.userId];
-                let sqlquery_3 = "SELECT products.product_name, products.product_code FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_id = products.id WHERE users.id == ?";
+                // let sqlquery_3 = "SELECT products.product_name, products.product_code FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_id = products.id WHERE users.id == ?";
+                let sqlquery_3 = "SELECT products.product_name, products.product_code FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_code = products.product_code WHERE users.id == ?";
                 db.all(sqlquery_3, dataset_3, (err, result) => {
-                    if (err) return console.log("error");
+                    if (err) return console.log("error_3");
                     let products = result;
                     res.render("user.html", {username: username, user_details: user_details_a, user_products: products})
                 })
@@ -86,7 +87,8 @@ module.exports = function (app) {
 
             // // Here we getting the users products
             let dataset_3 = [req.session.userId];
-            let sqlquery_3 = "SELECT products.product_name, products.product_brand, products.product_description_short FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_id = products.id WHERE users.id == ?";
+            // let sqlquery_3 = "SELECT products.product_name, products.product_brand, products.product_description_short FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_id = products.id WHERE users.id == ?";
+            let sqlquery_3 = "SELECT products.product_name, products.product_brand, products.product_description_short FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_code = products.product_code WHERE users.id == ?";
             db.all(sqlquery_3, dataset_3, (err, result) => {
                 if (err) return console.log("error");
                 let products = result;
@@ -232,5 +234,34 @@ module.exports = function (app) {
             })
         } else return res.redirect('/user');
     });
+
+    
+    app.post("/add_product", redirectLogin, function (req, res) {
+        // Some products to try
+        // 'hp', '259J1EA#ABB'
+        // 'hp', 'H6R58AA'
+        // 'hp', '2279A'
+        // 'Sony', '1242-0313'
+
+        let dataset_1 = [req.session.userId, req.body.product_code];
+        let sqlquery_1 = "INSERT INTO catalogues (user_id, product_code)VALUES(?,?)";
+
+        // Here we loading the products to our db -> products table
+        dbjs.insertProductToDB(req.body.product_brand, req.body.product_code , db)
+        .then((message)=>{
+            console.log(message)
+            // Here we adding the product to our db -> catalogue (so adding as a product for the clients catalogue)
+            dbjs.insertProductToCatalogue(db, dataset_1, sqlquery_1)
+            .then((message)=>{
+                console.log(message)
+                return res.redirect('/user');
+            },(message)=>{
+                console.log(message)
+                return res.redirect('/user');
+            })
+        },(message)=>{console.log(message); return res.redirect('/user')})
+    });
     ////////////////////// Post Requests
 }
+
+

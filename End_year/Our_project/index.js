@@ -1,10 +1,4 @@
-//////////////////////// Development stuff to remove
-// Here we just storing come credentials to test with
-global.users = [
-  {id:1, username:'John', password:'pass'},
-  {id:2, username:'Harry', password:'pass'}
-]
-//////////////////////// Development stuff to remove
+
 
 // This is for parsing data in the body of post requests
 const bodyParser = require("body-parser");
@@ -28,6 +22,13 @@ const db = new sqlite3.Database('./db/easy-catalogue.db', sqlite3.OPEN_READWRITE
 // Here we make our database global so main.js can see it
 global.db = db;
 //////////////////////// Database
+
+//////////////////////// API stuff
+const api = require('./api/api')
+const dbjs = require('./db/db')
+global.api = api;
+global.dbjs = dbjs;
+//////////////////////// API stuff
 
 //////////////////////// Sessions
 // Configure our sessions
