@@ -28,76 +28,47 @@ module.exports = function (app) {
     });
     app.get("/user", redirectLogin, function (req, res) {
         let dataset_1 = [req.session.userId];
-        let sqlquery_1 = "SELECT * FROM users WHERE id = ?";
+
         // Here we getting the username relating to the id in the databse
-        db.get(sqlquery_1, dataset_1, (err, result) => {
-            if (err) return console.log("error_1");
-            let username = result['username'];
-            
+        dbjs.getUserName(db, dataset_1).then((result)=>{
+            var objToSend = {};
+            objToSend.username = result;
             // Here we getting the users details
-            let dataset_2 = [req.session.userId];
-            let sqlquery_2 = "SELECT * FROM user_details WHERE id = ?";
-            db.get(sqlquery_2, dataset_2, (err, result) => {
-                if (err) return console.log("error_2");
-                // If the user has no details we parse an empty object
-                let user_details_a = {
-                    company_name_short: null,
-                    company_name_long: null,
-                    phone_number: null,
-                    address: null,
-                    color_1: null,
-                    color_2: null,
-                    test: null,
-                    logo_url: null
-                }
-                // else we parse the details
-                if(result) user_details_a = result;
-                
+            dbjs.getUserDetails(db, dataset_1).then((result)=>{
+                objToSend.user_details = result;
                 // Here we getting the users products
-                let dataset_3 = [req.session.userId];
-                // let sqlquery_3 = "SELECT products.product_name, products.product_code FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_id = products.id WHERE users.id == ?";
-                let sqlquery_3 = "SELECT products.product_name, products.product_code FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_code = products.product_code WHERE users.id == ?";
-                db.all(sqlquery_3, dataset_3, (err, result) => {
-                    if (err) return console.log("error_3");
-                    let products = result;
-                    res.render("user.html", {username: username, user_details: user_details_a, user_products: products})
-                })
-            })
-        })
+                dbjs.getUserProducts(db, dataset_1).then((result)=>{
+                    objToSend.user_products = result;
+                    objToSend.userid = req.session.userId;
+                    res.render("user.html", objToSend)
+                },(result)=>{console.log(result)})
+            },(result)=>{console.log(result)})
+        },(result)=>{console.log(result)})
     });
+
     app.get("/catalogue", function (req, res) {
         // Here we getting the users details
-        let dataset_2 = [req.session.userId];
-        let sqlquery_2 = "SELECT * FROM user_details WHERE id = ?";
-        db.get(sqlquery_2, dataset_2, (err, result) => {
-            if (err) return console.log("error");
-            // If the user has no details we parse an empty object
-            let user_details_a = {
-                company_name_short: null,
-                company_name_long: null,
-                phone_number: null,
-                address: null,
-                color_1: null,
-                color_2: null,
-                test: null,
-                logo_url: null
-            }
-            // else we parse the details
-            if(result) user_details_a = result;
+        // let dataset_2 = [req.session.userId];
+        let dataset_2 = [req.query.catalogue];
 
-            // // Here we getting the users products
-            let dataset_3 = [req.session.userId];
-            // let sqlquery_3 = "SELECT products.product_name, products.product_brand, products.product_description_short FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_id = products.id WHERE users.id == ?";
-            let sqlquery_3 = "SELECT products.product_name, products.product_brand, products.product_description_short FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_code = products.product_code WHERE users.id == ?";
-            db.all(sqlquery_3, dataset_3, (err, result) => {
-                if (err) return console.log("error");
-                let products = result;
-                res.render("catalogue.html", {user_details: user_details_a, user_products: products})
-            })
-        })
+        dbjs.getUserDetails(db,dataset_2).then((result)=>{
+            var objToSend = {};
+            objToSend.user_details = result;
+            dbjs.getUserProducts(db,dataset_2).then((result)=>{
+                objToSend.user_products = result;
+                res.render("catalogue.html", objToSend)
+            },(result)=>{console.log(result)})
+        },(result)=>{console.log(result)})
     });
+
     app.get("/product", function (req, res) {
-        res.render("product.html")
+        let dataset_2 = [req.query.product_id];
+        let sqlquery_2 = "SELECT * FROM products WHERE product_id = ?";
+        db.get(sqlquery_2, dataset_2, (err, result) => {
+            if(err) return console.log("error");
+            res.render("product.html", {product_details: result})
+        })
+        
     });
     // In pipeline we calling redirectUser (basically checks if user is loged in or not)
     app.get("/login", redirectUser, function (req, res) {
@@ -235,7 +206,6 @@ module.exports = function (app) {
         } else return res.redirect('/user');
     });
 
-    
     app.post("/add_product", redirectLogin, function (req, res) {
         // Some products to try
         // 'hp', '259J1EA#ABB'
@@ -254,12 +224,36 @@ module.exports = function (app) {
             dbjs.insertProductToCatalogue(db, dataset_1, sqlquery_1)
             .then((message)=>{
                 console.log(message)
-                return res.redirect('/user');
+                return res.render("response.html", {
+                    information: { redirect: "/user", message: "Success: " + message, status: "Success"}
+                })
             },(message)=>{
                 console.log(message)
-                return res.redirect('/user');
+                return res.render("response.html", {
+                    information: { redirect: "/user", message: "Error: " + message, status: "Error"}
+                })
             })
-        },(message)=>{console.log(message); return res.redirect('/user')})
+        },(message)=>{
+            console.log(message)
+            return res.render("response.html", {
+                information: { redirect: "/user", message: "Error: " + message, status: "Error"}
+            })
+        })
+    });
+
+    app.post("/delete_product", function (req, res) {
+        let dataset_1 = [req.session.userId, req.body.subject]
+        let sqlquery_1 = "DELETE FROM catalogues WHERE user_id = ? AND product_code = ?";
+        db.run(sqlquery_1, dataset_1, function (err) {
+            if(err){
+                return res.render("response.html", {
+                    information: { redirect: "/user", message: "Error: " + err, status: "Error"}
+                })
+            }
+            return res.render("response.html", {
+                information: { redirect: "/user", message: "Success: Product Deleted", status: "Success"}
+            })
+        })
     });
     ////////////////////// Post Requests
 }

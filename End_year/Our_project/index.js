@@ -1,5 +1,3 @@
-
-
 // This is for parsing data in the body of post requests
 const bodyParser = require("body-parser");
 // This our express server library
@@ -24,8 +22,11 @@ global.db = db;
 //////////////////////// Database
 
 //////////////////////// API stuff
+// This our function for the API requests to icecat
 const api = require('./api/api')
+// These are our database querying functions
 const dbjs = require('./db/db')
+// Below we just making them global
 global.api = api;
 global.dbjs = dbjs;
 //////////////////////// API stuff

@@ -29,6 +29,10 @@
 
 // insertProductToDB('hp', '259J1EA#ABB')
 
+/** Below returns a promise to insert a product into the DB -> products table
+ * If the product is already in, or was successfully inserted, returns a resolve
+ * If the API function 'getProduct' fails it returns a reject
+*/
 function insertProductToDB (brand, productCode, db) {
   return new Promise ((resolve,reject)=>{
     const getFieldsSqlQuery = 'SELECT DISTINCT name FROM pragma_table_info(\'products\') AS productsTblInfo;'
@@ -49,7 +53,6 @@ function insertProductToDB (brand, productCode, db) {
           } else {
             resolve("Added to products");
           }
-          // db.close()
         })
       },() => {reject("Product not found on api")}
       )
@@ -57,6 +60,7 @@ function insertProductToDB (brand, productCode, db) {
   })
 }
 
+/** Below returns a promise to insert a product into the DB -> products catalogues*/
 function insertProductToCatalogue(db, dataset, sqlquery){
   // Here we loading the products to our db -> products table
   return new Promise ((resolve,reject)=>{
@@ -71,4 +75,48 @@ function insertProductToCatalogue(db, dataset, sqlquery){
   })
 }
 
-module.exports = { insertProductToDB, insertProductToCatalogue }
+/** Below returns a promise to get the username for a userid*/
+function getUserName(db, dataset){
+  let sqlquery = "SELECT * FROM users WHERE id = ?";
+  return new Promise ((resolve,reject)=>{
+      db.get(sqlquery, dataset , (err, result) => {
+        if (err) reject("error");
+        else resolve(result['username']);
+      })
+  })
+}
+
+/** Below returns a promise to return a users details*/
+function getUserDetails(db, dataset){
+  let sqlquery = "SELECT * FROM user_details WHERE id = ?";
+  return new Promise ((resolve,reject)=>{
+      db.get(sqlquery, dataset , (err, result) => {
+        if (err) reject("error");
+        let user_details_a = {
+          company_name_short: null,
+          company_name_long: null,
+          phone_number: null,
+          address: null,
+          color_1: null,
+          color_2: null,
+          test: null,
+          logo_url: null
+        }
+      // else we parse the details
+      if(result) user_details_a = result;
+      resolve(user_details_a);
+    })
+  })
+}
+/** Below returns a promise to return a users details*/
+function getUserProducts(db, dataset){
+  let sqlquery = "SELECT products.product_id, products.product_name, products.product_code FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_code = products.product_code WHERE users.id == ?";
+  return new Promise ((resolve,reject)=>{
+      db.all(sqlquery, dataset , (err, result) => {
+        if (err) reject("error");
+        else resolve(result);
+      })
+  })
+}
+
+module.exports = { insertProductToDB, insertProductToCatalogue, getUserName, getUserDetails, getUserProducts }

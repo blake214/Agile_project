@@ -19,22 +19,15 @@
         <input type="submit" value="Update">
     </form>
     <!-- This table will populate dynamically from the parsed JSON object -->
-    <table style="background-color:grey;">
-        <tr>
-            <th>Product code</th>
-            <th>Product name</th>
-            <th>Remove</th>
-        </tr>
-
+    <form style="background-color:grey;" name="delete_product" action="/delete_product" method="POST">
         <% for (let i = 0; i < user_products.length; i++){ %>
-        <tr>
-            <td><%= user_products[i].product_code %></td>
-            <td><%= user_products[i].product_name %></td>
-            <!-- Here we will have buttons, and event listener in JS to add to the 'remove array' -->
-            <td>Remove</td>
-        </tr>
+            <label><%= user_products[i].product_name %></label>
+            <label><%= user_products[i].product_code %></label>
+            <button name="subject" type="submit" value=<%= user_products[i].product_code %>>Delete!</button>
+            <br>
         <% } %>
-    </table>
+        
+    </form>
     <!-- This form i think will store the details in an array locally -->
     <form style="background-color:grey;" name="add_product" action="/add_product" method="POST">
         <label>User Products</label><br>
@@ -42,15 +35,12 @@
         <input type="text" name="product_brand" placeholder="product_brand" required><br>
         <input type="submit" value="Add Product">
     </form>
-    
-    <!-- Here we will post with event listener in JS, we will send both the 'added' and 'removed' data -->
-    <form style="background-color:grey;" name="update" action="/update" method="POST">
-        <input type="submit" value="Update">
-    </form>
 
     <form style="background-color:grey;" name="logout" action="/logout" method="POST">
         <input type="submit" value="Logout">
     </form>
+
+    <a href="/catalogue?catalogue=<%= userid %>">View catalogue</a>
 
     <!-- This a script to replace placeholders in the forms, NOTE element ids need to match parsed objects keys -->
     <script>
@@ -63,8 +53,6 @@
     <div style="background-color:grey;">
         <a href="/">index</a>
         <a href="/user">user</a>
-        <a href="/product">product</a>
-        <a href="/catalogue">catalogue</a>
         <a href="/login">Login</a>
         <a href="/register">Register</a>
     </div>

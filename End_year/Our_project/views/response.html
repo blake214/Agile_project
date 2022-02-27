@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Response Page</title>
+    </head>
+    <!-- Some inbedded css just because its not much -->
+    <style>
+        #mainContainer {
+            width: 400px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        .Error {
+            background-color: rgb(255, 57, 57);
+        }
+        .Success {
+            background-color: rgb(62, 165, 62);
+        }
+    </style>
+    <body>
+        <div id="mainContainer" class="<%= information.status %>">
+            <h1>Server Response</h1>
+            <h2><%= information.status %></h2>
+            <p><%= information.message %></p>
+            <p>Will redirect you back to automatically</p>
+        </div>
+        <!-- The below script redirects to another page according to the parsed object values-->
+        <script>
+            const urlParams = new URLSearchParams(location.search);
+            var source_route = false;
+            // Below im checking if there is a source key in the parsed object (the add device page supplies one)
+            for (const [key, value] of urlParams) {
+                if (key == 'source') {
+                    var the_route = value;
+                    var source_route = true;
+                    break;
+                }
+            }
+            if (source_route) {
+                // This will redirect to the source link instead of the redirect link, only if the source link is supplied
+                setTimeout(function () { window.location.href = the_route; }, 5000);
+            } else {
+                // If no source link supplied will redirect to the redirect link supplied
+                setTimeout(function () { window.location.href = "<%= information.redirect %>"; }, 5000);
+            }
+        </script>
+    </body>
+</html>

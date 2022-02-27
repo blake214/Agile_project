@@ -39,7 +39,8 @@ VALUES('2','aa','bb','cc','dd','ee','ff','gg');
 -- product_specs TEXT);
 
 CREATE TABLE products (
-product_code TEXT PRIMARY KEY,
+product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+product_code TEXT UNIQUE,
 product_name TEXT,
 product_description_short TEXT,
 product_description_long TEXT,
@@ -58,7 +59,7 @@ INSERT INTO products (product_code,product_name)VALUES('zzz','product_4');
 -- product_id INTEGER,
 -- PRIMARY KEY(user_id,product_id),
 -- FOREIGN KEY(user_id) REFERENCES users(id),
--- FOREIGN KEY(product_id) REFERENCES products(id));
+-- FOREIGN KEY(product_id) REFERENCES products(product_id));
 
 CREATE TABLE catalogues (
 user_id INTEGER,

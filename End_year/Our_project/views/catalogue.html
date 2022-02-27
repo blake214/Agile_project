@@ -11,14 +11,14 @@
     <br>
     <p>Products:</p>
     <% for (let i = 0; i < user_products.length; i++){ %>
-        <%= user_products[i].product_name %>, <%= user_products[i].product_code %> <br>
+        <a href="/product?product_id=<%= user_products[i].product_id %>">
+            <%= user_products[i].product_name %>, <%= user_products[i].product_code %>
+        </a><br>
     <% } %>
 
     <div style="background-color:grey;">
         <a href="/">index</a>
         <a href="/user">user</a>
-        <a href="/product">product</a>
-        <a href="/catalogue">catalogue</a>
         <a href="/login">Login</a>
         <a href="/register">Register</a>
     </div>
