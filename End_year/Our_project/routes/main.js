@@ -19,13 +19,9 @@ module.exports = function (app) {
     ////////////////////// Middleware functions
 
     ////////////////////// Get Requests
-    app.get("/", function (req, res) {
-        // Here we getting the session id (will be undefind if not logged in)
-        const userId = req.session.userId;
-        console.log(userId);
-        // Here we parsing the session id to the template page
-        res.render("index.html", {userSessionId: userId});
+    app.get("/", redirectLogin, redirectUser, function (req, res) {
     });
+
     app.get("/user", redirectLogin, function (req, res) {
         let dataset_1 = [req.session.userId];
 
@@ -62,13 +58,10 @@ module.exports = function (app) {
     });
 
     app.get("/product", function (req, res) {
-        let dataset_2 = [req.query.product_id];
-        let sqlquery_2 = "SELECT * FROM products WHERE product_id = ?";
-        db.get(sqlquery_2, dataset_2, (err, result) => {
-            if(err) return console.log("error");
+        let dataset = [req.query.product_id];
+        dbjs.getProduct(db,dataset).then((result)=>{
             res.render("product.html", {product_details: result})
-        })
-        
+        },(result) => {console.log(result)})        
     });
     // In pipeline we calling redirectUser (basically checks if user is loged in or not)
     app.get("/login", redirectUser, function (req, res) {
@@ -90,57 +83,45 @@ module.exports = function (app) {
             // Should do promises in here but not too sure how, dont think a nested query is correct, this works though
             let dataset_1 = [username, password];
             let dataset_2 = [username];
-            let sqlquery_1 = "SELECT EXISTS(SELECT * FROM users WHERE username = ? AND password = ?)";
-            let sqlquery_2 = "SELECT * FROM users WHERE username = ?";
             
             // Here we querying if there is a match for the username and password
-            db.get(sqlquery_1, dataset_1, (err, result) => {
-                if (err) return console.log("error");
-                // If there is a match
-                if(Object.values(result)[0]){
-                    // Here we query the matches id
-                    db.get(sqlquery_2, dataset_2, (err, result) => {
-                        if (err) return console.log("error");
-                        // Here we creating our session id
-                        req.session.userId = result['id'];
-                        return res.redirect('/user');
-                    })
-                }else return res.redirect('/login');
-            });
+            dbjs.checkCredentials(db,dataset_1).then((result)=>{
+                dbjs.getUserId(db, dataset_2).then((result)=>{
+                    req.session.userId = result;
+                    return res.redirect('/user');
+                },(result) => {console.log(result)})
+            },(result) => {
+                console.log(result); 
+                return res.redirect('/login')})
         }
     });
+
     app.post("/register", redirectUser, function (req, res) {
         const username = req.body.username
         const password = req.body.password
+
         if (username && password){
             // Should do promises in here but not too sure how, dont think a nested query is correct, this works though
             let dataset_1 = [username];
             let dataset_2 = [username, password];
-            let dataset_3 = [username];
-            let sqlquery_1 = "SELECT EXISTS(SELECT * FROM users WHERE username = ?)";
-            let sqlquery_2 = "INSERT INTO users (username, password)VALUES(?,?)";
-            let sqlquery_3 = "SELECT * FROM users WHERE username = ?";
 
             // Here we checking if there is a user with the same username already in the database
-            db.get(sqlquery_1, dataset_1, (err, result) => {
-                if (err) return console.log("error");
-                // If there is NOT a match
-                if(!Object.values(result)[0]){
-                    // Here we adding the user to the database
-                    db.run(sqlquery_2, dataset_2, (err, result) => {
-                        if (err) return console.log("error");
-                        console.log("user added")
-                        // Here we querying the database for the new id, and assigning the session id
-                        db.get(sqlquery_3, dataset_3, (err, result) => {
-                            if (err) return console.log("error");
-                            req.session.userId = result['id'];
-                            return res.redirect('/user')
-                        })
-                    })
-                }else return res.redirect('/register');
-            });
+            dbjs.userExists(db,dataset_1).then((result)=>{
+                // Here we adding the user to the database
+                dbjs.createUser(db,dataset_2).then((result)=>{
+                    // Here we getting the users id
+                    dbjs.getUserId(db, dataset_1).then((result)=>{
+                        req.session.userId = result;
+                        // Here we creating a details row for the user
+                        dbjs.createUserDetails(db,[result]).then((result)=>{
+                            return res.redirect('/user');
+                        },(result) => {console.log(result)})
+                    },(result) => {console.log(result)})
+                },(result) => {console.log(result)})
+            },(result)=>{return res.redirect('/register')})
         }
     });
+
     app.post("/logout", redirectLogin, function (req, res) {
         // This is a function that terminates the session
         req.session.destroy(err=>{
@@ -197,31 +178,20 @@ module.exports = function (app) {
         // If there has been a change we update the database
         if (somethingToCchanged) {
             let dataset_1 = [req.session.userId];
-            let sqlquery_1 = "UPDATE user_details SET "+ sqlQuery_concatenation +" WHERE id == ?";
-            db.run(sqlquery_1, dataset_1 , (err, result) => {
-                if (err) return console.log("error");
-                console.log("details updated");
+            dbjs.updateUserDetails(db, dataset_1, sqlQuery_concatenation).then((result)=>{
                 return res.redirect('/user');
-            })
+            },(result) => {console.log(result)})
         } else return res.redirect('/user');
     });
 
     app.post("/add_product", redirectLogin, function (req, res) {
-        // Some products to try
-        // 'hp', '259J1EA#ABB'
-        // 'hp', 'H6R58AA'
-        // 'hp', '2279A'
-        // 'Sony', '1242-0313'
-
         let dataset_1 = [req.session.userId, req.body.product_code];
-        let sqlquery_1 = "INSERT INTO catalogues (user_id, product_code)VALUES(?,?)";
-
         // Here we loading the products to our db -> products table
         dbjs.insertProductToDB(req.body.product_brand, req.body.product_code , db)
         .then((message)=>{
             console.log(message)
             // Here we adding the product to our db -> catalogue (so adding as a product for the clients catalogue)
-            dbjs.insertProductToCatalogue(db, dataset_1, sqlquery_1)
+            dbjs.insertProductToCatalogue(db, dataset_1)
             .then((message)=>{
                 console.log(message)
                 return res.render("response.html", {
@@ -243,15 +213,13 @@ module.exports = function (app) {
 
     app.post("/delete_product", function (req, res) {
         let dataset_1 = [req.session.userId, req.body.subject]
-        let sqlquery_1 = "DELETE FROM catalogues WHERE user_id = ? AND product_code = ?";
-        db.run(sqlquery_1, dataset_1, function (err) {
-            if(err){
-                return res.render("response.html", {
-                    information: { redirect: "/user", message: "Error: " + err, status: "Error"}
-                })
-            }
+        dbjs.deleteProductCatalogue(db,dataset_1).then((result)=>{
             return res.render("response.html", {
-                information: { redirect: "/user", message: "Success: Product Deleted", status: "Success"}
+                information: { redirect: "/user", message: result, status: "Success"}
+            })
+        },(result) => {
+            return res.render("response.html", {
+                information: { redirect: "/user", message: result + err, status: "Error"}
             })
         })
     });

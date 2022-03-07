@@ -27,17 +27,6 @@ VALUES('1','aa','bb','cc','dd','ee','ff','gg');
 INSERT INTO user_details (id,company_name_short,company_name_long,phone_number,address,color_1,color_2,logo_url)
 VALUES('2','aa','bb','cc','dd','ee','ff','gg');
 
--- CREATE TABLE products (
--- id INTEGER PRIMARY KEY AUTOINCREMENT,
--- product_code TEXT,
--- product_name TEXT,
--- product_description_short TEXT,
--- product_description_long TEXT,
--- product_img_urls TEXT,
--- product_category TEXT,
--- product_brand TEXT,
--- product_specs TEXT);
-
 CREATE TABLE products (
 product_id INTEGER PRIMARY KEY AUTOINCREMENT,
 product_code TEXT UNIQUE,
@@ -49,42 +38,12 @@ product_category TEXT,
 product_brand TEXT,
 product_specs TEXT);
 
-INSERT INTO products (product_code,product_name)VALUES('xxx','product_1');
-INSERT INTO products (product_code,product_name)VALUES('qqq','product_2');
-INSERT INTO products (product_code,product_name)VALUES('zzz','product_3');
-INSERT INTO products (product_code,product_name)VALUES('zzz','product_4');
-
--- CREATE TABLE catalogues (
--- user_id INTEGER,
--- product_id INTEGER,
--- PRIMARY KEY(user_id,product_id),
--- FOREIGN KEY(user_id) REFERENCES users(id),
--- FOREIGN KEY(product_id) REFERENCES products(product_id));
-
 CREATE TABLE catalogues (
 user_id INTEGER,
 product_code TEXT,
 PRIMARY KEY(user_id,product_code),
 FOREIGN KEY(user_id) REFERENCES users(id),
 FOREIGN KEY(product_code) REFERENCES products(product_code));
-
--- INSERT INTO catalogues (user_id, product_id)VALUES('1','1');
--- INSERT INTO catalogues (user_id, product_id)VALUES('1','2');
--- INSERT INTO catalogues (user_id, product_id)VALUES('1','3');
--- INSERT INTO catalogues (user_id, product_id)VALUES('1','4');
--- INSERT INTO catalogues (user_id, product_id)VALUES('2','1');
--- INSERT INTO catalogues (user_id, product_id)VALUES('2','2');
--- INSERT INTO catalogues (user_id, product_id)VALUES('2','3');
-
--- SELECT
--- users.username,
--- products.product_name,
--- products.product_code
--- FROM catalogues
--- JOIN users
--- ON catalogues.user_id = users.id
--- JOIN products
--- ON catalogues.product_id = products.id WHERE users.id == '1';
 
 SELECT
 users.username,
