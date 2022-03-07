@@ -1,12 +1,29 @@
 <html>
-    <h1>Login Page</h1>
-    <p> username: John, password: pass</p>
-    <form name="login" action="/login" method="POST">
-        <label>Login</label><br>
-        <input type="text" name="username" placeholder="username" required><br>
-        <input type="password" name="password" placeholder="password" required><br>
-        <input type="submit" value="Login">
-    </form>
-    <a href="/register">Register</a>
-    <a href="/">index</a>
+    <header>
+        <link rel="stylesheet" href="css/main.css" />
+    </header>
+    <body>
+        <nav>
+            <p>Easy Catalogue</p>
+        </nav>
+        <div id="navspacer"></div>
+
+        <div id="mainContainer">
+            <div id="login_form">
+                <form name="login" action="/login" method="POST">
+                    <label><b>Login</b></label><br>
+                    <br>
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="username" required><br>
+                    <br>
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="password" required><br>
+                    <br>
+                    <input type="submit" value="Login">
+                </form>
+                <a href="/register"><button class="form_button">Create Account</button></a>
+            </div>
+        </div>
+        <div id="footer"></div>
+    </body>
 </html>

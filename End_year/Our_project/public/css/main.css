@@ -1,0 +1,105 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+
+#footer {
+    position: fixed;
+    height: 2em;
+    width:100%;
+    bottom: 0;
+    z-index: 5;
+    background-color:#777;
+    text-align: center;
+}
+
+nav {
+    font-size: 1.5em;
+    position: fixed;
+    width:100%;
+    top: 0;
+    z-index: 5;
+    background-color:#777;
+    text-align: center;
+    
+}
+
+#navspacer {
+    height: 1.5em;
+}
+
+#mainContainer {
+    max-width: 800px;
+    margin: auto;
+    padding:2em;
+}
+
+/* Login and register forms */
+#login_form {
+    width : 400px;
+    margin: auto;
+    background-color:#D0D0D0;
+    padding: 0.5em;
+}
+
+
+input, .form_button {
+    width: 100%;
+    height: 2em;
+}
+
+/* user page */
+#user_form {
+    width : 100%;
+    margin: auto;
+    background-color:#D0D0D0;
+    padding: 0.5em;
+}
+
+#user_name {
+    text-align: right;
+    padding: 0.5em;
+    background-color:#999;
+}
+
+#product_list {
+    width:100%;
+}
+
+.product_name, .product_code, .product_delete{
+    height: 1.3em;
+    font-size: smaller;
+}
+
+
+.product_name {
+    float: left;
+    width: 70%;
+    background-color:#A9A9A9;
+    overflow: hidden;
+}
+
+.product_code {
+    float: left;
+    background-color: #C0C0C0;
+    width: 20%;
+}
+
+.product_delete {
+    float: left;
+    width: 10%;
+}
+
+.product_delete button {
+    width: 100%;
+    height: 100%;
+}
+
+.flex_box_50_width {
+    width:50%;
+}
+
+.flex_box_2 {
+    display:flex;
+}

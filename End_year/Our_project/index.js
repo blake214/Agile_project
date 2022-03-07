@@ -56,6 +56,11 @@ app.use(bodyParser.urlencoded({
 }))
 //////////////////////// Body parser
 
+//////////////////////// External resources
+// Allows the html pages to load external files as css and js
+app.use(express.static(__dirname + '/public'));
+//////////////////////// External resources
+
 //////////////////////// Server
 app.listen(port, () => console.log(`Easy Catalogue is listening on port ${port}!`));
 require("./routes/main")(app);

@@ -1,66 +1,104 @@
 <html>
-    <h1>User Page</h1>
-    <p>Logged in as: <%= username %></p>
+    <header>
+        <link rel="stylesheet" href="css/main.css" />
+    </header>
+    <body>
+        <nav>
+            <p>Easy Catalogue</p>
+        </nav>
+        <div id="navspacer"></div>
+        <div id="user_name"><p>Logged in as: <%= username %></p></div>
+        <div id="mainContainer">
+            <div id="user_form">
+                <form name="user_details" action="/user_details" method="POST">
+                    <label><b>User Details</b></label><br>
+                    <br>
+                    <label>Company name - short</label>
+                    <input type="text" id="company_name_short" name="company_name_short" placeholder="short company name"><br>
+                    <br>
+                    <label>Company name - long</label>
+                    <input type="text" id="company_name_long" name="company_name_long" placeholder="long company name"><br>
+                    <br>
+                    <label>Phone Number</label>
+                    <input type="text" id="phone_number" name="phone_number" placeholder="phone number"><br>
+                    <br>
+                    <label>Address</label>
+                    <input type="text" id="address" name="address" placeholder="address"><br>
+                    <input type="submit" value="Update">
+                </form>
+                <br><hr><br>
+                <form name="user_catalogue_theme" action="/user_details" method="POST">
+                    <label><b>Catalogue Theme</b></label><br>
+                    <br>
+                    <div class="flex_box_2">
+                        <div class="flex_box_50_width" >
+                            <label>Colour 1</label>
+                            <input type="text" id="color_1" name="color_1" placeholder="color 1">
+                        </div>
+                        <div class="flex_box_50_width" >
+                            <label>Colour 2</label>
+                            <input type="text" id="color_2" name="color_2" placeholder="color 2">
+                        </div>
+                    </div>
+                    <!-- We will need to send a img somehow, Look into 'multer' library, there youtube video on it "Uploading an Image | Creating a REST API with Node.js" -->
+                    <br>
+                    <label>Logo</label>
+                    <input type="text" id="logo_url" name="logo_url" placeholder="logo"><br>
+                    <input type="submit" value="Update">
+                </form>
+                <br><hr><br>
+                <!-- This table will populate dynamically from the parsed JSON object -->
+                <form id="product_list" name="delete_product" action="/delete_product" method="POST">
+                    <label><b>Current products</b></label><br>
+                    <br>
+                    <% for (let i = 0; i < user_products.length; i++){ %>
+                        <div class="product_code"><label><%= user_products[i].product_code %></label></div>
+                        <div class="product_name"><label><%= user_products[i].product_name %></label></div>
+                        <div class="product_delete"><button name="subject" type="submit" value=<%= user_products[i].product_code %>>Delete!</button></div>
+                        <hr>
+                    <% } %>
+                </form>
+                <br><hr><br>
+                <!-- This form i think will store the details in an array locally -->
+                <form name="add_product" action="/add_product" method="POST">
+                    <label><b>Add product</b></label><br>
+                    <br>
+                    <div class="flex_box_2">
+                        <div class="flex_box_50_width" >
+                            <label>Product code</label>
+                            <input type="text" name="product_code" placeholder="product_code" required>
+                        </div>
+    
+                        <div class="flex_box_50_width" >
+                            <label>Product brand name</label><br>
+                        <input type="text" name="product_brand" placeholder="product_brand" required><br>
+                        </div>
+                    </div>
+                    <input type="submit" value="Add Product">
+                </form>
+                <br><hr><br>
+                <a href="/catalogue?catalogue=<%= userid %>"><button class="form_button">View catalogue</button></a>
+                <form name="logout" action="/logout" method="POST">
+                    <input type="submit" value="Logout">
+                </form>
+            </div>
+        </div>
+        <div id="footer"></div>
 
-    <form style="background-color:grey;" name="user_details" action="/user_details" method="POST">
-        <label>User Details</label><br>
-        <input type="text" id="company_name_short" name="company_name_short" placeholder="short company name"><br>
-        <input type="text" id="company_name_long" name="company_name_long" placeholder="long company name"><br>
-        <input type="text" id="phone_number" name="phone_number" placeholder="phone number"><br>
-        <input type="text" id="address" name="address" placeholder="address"><br>
-        <input type="submit" value="Update">
-    </form>
-    <form style="background-color:grey;" name="user_catalogue_theme" action="/user_details" method="POST">
-        <label>User Catalogue Theme</label><br>
-        <input type="text" id="color_1" name="color_1" placeholder="color 1"><br>
-        <input type="text" id="color_2" name="color_2" placeholder="color 2"><br>
-        <!-- We will need to send a img somehow, Look into 'multer' library, there youtube video on it "Uploading an Image | Creating a REST API with Node.js" -->
-        <input type="text" id="logo_url" name="logo_url" placeholder="logo"><br>
-        <input type="submit" value="Update">
-    </form>
-    <!-- This table will populate dynamically from the parsed JSON object -->
-    <form style="background-color:grey;" name="delete_product" action="/delete_product" method="POST">
-        <% for (let i = 0; i < user_products.length; i++){ %>
-            <label><%= user_products[i].product_name %></label>
-            <label><%= user_products[i].product_code %></label>
-            <button name="subject" type="submit" value=<%= user_products[i].product_code %>>Delete!</button>
-            <br>
-        <% } %>
-        
-    </form>
-    <!-- This form i think will store the details in an array locally -->
-    <form style="background-color:grey;" name="add_product" action="/add_product" method="POST">
-        <label>User Products</label><br>
-        <input type="text" name="product_code" placeholder="product_code" required><br>
-        <input type="text" name="product_brand" placeholder="product_brand" required><br>
-        <input type="submit" value="Add Product">
-    </form>
+        <!-- This a script to replace placeholders in the forms, NOTE element ids need to match parsed objects keys -->
+        <script>
+            let p = <%- JSON.stringify(user_details) %>;
+            for (const key in p){
+                var e = document.getElementById(key);
+                if (e && p[key] != 'null' && p[key] != null) e.setAttribute('placeholder', p[key]);
+            }
+        </script>
 
-    <form style="background-color:grey;" name="logout" action="/logout" method="POST">
-        <input type="submit" value="Logout">
-    </form>
-
-    <a href="/catalogue?catalogue=<%= userid %>">View catalogue</a>
-
-    <!-- This a script to replace placeholders in the forms, NOTE element ids need to match parsed objects keys -->
-    <script>
-        let p = <%- JSON.stringify(user_details) %>;
-        for (const key in p){
-            var e = document.getElementById(key);
-            if (e && p[key] != 'null' && p[key] != null) e.setAttribute('placeholder', p[key]);
-        }
-    </script>
-    <div style="background-color:grey;">
-        <a href="/">index</a>
-        <a href="/user">user</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    </div>
-    products to try: <br>
-    'hp', '259J1EA#ABB' <br>
-    'hp', 'H6R58AA'<br>
-    'hp', '2279A'<br>
-    'Sony', '1242-0313'<br>
-
+        products to try: <br>
+        'hp', '259J1EA#ABB' <br>
+        'hp', 'H6R58AA'<br>
+        'hp', '2279A'<br>
+        'Sony', '1242-0313'<br>
+    </body>
 </html>
 
