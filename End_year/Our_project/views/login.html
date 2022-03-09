@@ -1,6 +1,7 @@
 <html>
     <header>
         <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/users.css" />
     </header>
     <body>
         <nav>
@@ -24,6 +25,33 @@
                 <a href="/register"><button class="form_button">Create Account</button></a>
             </div>
         </div>
-        <div id="footer"></div>
+        <footer></footer>
+
+        <div id="tip_bar"> 
+            <div id="tip_bar_container"> 
+                <button id="help_button">help</button>
+                <div id="help_block" style="display: none;">
+                    <p>Demo account:</p>
+                    <p>Username: <b>John</b></p>
+                    <p>Password: <b>pass</b></p>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Here we just toggling the help button -->
+        <script>
+            var button = document.getElementById("help_button")
+            button.addEventListener("click", toggleHelp);
+
+            function toggleHelp(){
+                var spec_block = document.getElementById("help_block");
+                if(spec_block.style.display == "none") {
+                    spec_block.style.display = "block"
+                } else {
+                    spec_block.style.display = "none"
+                }
+            }
+        </script>
     </body>
 </html>

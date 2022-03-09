@@ -1,6 +1,7 @@
 <html>
     <header>
         <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/users.css" />
     </header>
     <body>
         <nav>
@@ -10,6 +11,7 @@
         <div id="user_name"><p>Logged in as: <%= username %></p></div>
         <div id="mainContainer">
             <div id="user_form">
+
                 <form name="user_details" action="/user_details" method="POST">
                     <label><b>User Details</b></label><br>
                     <br>
@@ -27,40 +29,38 @@
                     <input type="submit" value="Update">
                 </form>
                 <br><hr><br>
-                <!-- <form name="user_catalogue_theme" action="/user_details" method="POST"> -->
 
                 <form name="user_catalogue_theme" action="/user_details" method="POST" enctype="multipart/form-data">
                     <label><b>Catalogue Theme</b></label><br>
                     <label>RRB colours: values between 0-255</label><br>
                     <br>
-                    <div class="flex_box_2">
+                    <div class="flex_box">
                         <div class="flex_box_50_width" >
                             <label>Colour 1</label><br>
-                            <input class="color_input" type="number" id="color_1_r" name="color_1_r" placeholder="Value between 0-255" min="0" max="255" >
+                            <input class="form_color_input" type="number" id="color_1_r" name="color_1_r" placeholder="Value between 0-255" min="0" max="255" >
                             <label>R</label><br>
-                            <input class="color_input" type="number" id="color_1_g" name="color_1_g" placeholder="Value between 0-255" min="0" max="255" >
+                            <input class="form_color_input" type="number" id="color_1_g" name="color_1_g" placeholder="Value between 0-255" min="0" max="255" >
                             <label>G</label><br>
-                            <input class="color_input" type="number" id="color_1_b" name="color_1_b" placeholder="Value between 0-255" min="0" max="255" >
+                            <input class="form_color_input" type="number" id="color_1_b" name="color_1_b" placeholder="Value between 0-255" min="0" max="255" >
                             <label>B</label><br>
                         </div>
                         <div class="flex_box_50_width" >
                             <label>Colour 2</label><br>
-                            <input class="color_input" type="number" id="color_2_r" name="color_2_r" placeholder="Value between 0-255" min="0" max="255" >
+                            <input class="form_color_input" type="number" id="color_2_r" name="color_2_r" placeholder="Value between 0-255" min="0" max="255" >
                             <label>R</label><br>
-                            <input class="color_input" type="number" id="color_2_g" name="color_2_g" placeholder="Value between 0-255" min="0" max="255" >
+                            <input class="form_color_input" type="number" id="color_2_g" name="color_2_g" placeholder="Value between 0-255" min="0" max="255" >
                             <label>G</label><br>
-                            <input class="color_input" type="number" id="color_2_b" name="color_2_b" placeholder="Value between 0-255" min="0" max="255" >
+                            <input class="form_color_input" type="number" id="color_2_b" name="color_2_b" placeholder="Value between 0-255" min="0" max="255" >
                             <label>B</label><br>
                         </div>
                     </div>
-                    <!-- We will need to send a img somehow, Look into 'multer' library, there youtube video on it "Uploading an Image | Creating a REST API with Node.js" -->
                     <br>
                     <label>Logo</label><br>
-                    <input type="file" id="logo_url" name="logo_url" accept="image/jpg, image/jpeg, image/png" class="uploadButton"><br>
+                    <input type="file" id="logo_url" name="logo_url" accept="image/jpg, image/jpeg, image/png"><br>
                     <input type="submit" value="Update">
                 </form>
                 <br><hr><br>
-                <!-- This table will populate dynamically from the parsed JSON object -->
+
                 <form id="product_list" name="delete_product" action="/delete_product" method="POST">
                     <label><b>Current products</b></label><br>
                     <br>
@@ -72,16 +72,15 @@
                     <% } %>
                 </form>
                 <br><hr><br>
-                <!-- This form i think will store the details in an array locally -->
+                
                 <form name="add_product" action="/add_product" method="POST">
                     <label><b>Add product</b></label><br>
                     <br>
-                    <div class="flex_box_2">
+                    <div class="flex_box">
                         <div class="flex_box_50_width" >
                             <label>Product code</label>
                             <input type="text" name="product_code" placeholder="product_code" required>
                         </div>
-    
                         <div class="flex_box_50_width" >
                             <label>Product brand</label><br>
                         <input type="text" name="product_brand" placeholder="product_brand" required><br>
@@ -96,7 +95,21 @@
                 </form>
             </div>
         </div>
-        <div id="footer"></div>
+
+        <footer></footer>
+
+        <div id="tip_bar"> 
+            <div id="tip_bar_container"> 
+                <button id="help_button">help</button>
+                <div id="help_block" style="display: none;">
+                    <p>Products to try:</p>
+                    <p>Code: <b>259J1EA#ABB</b>, Brand: <b>hp</b></p>
+                    <p>Code: <b>H6R58AA</b>, Brand: <b>hp</b></p>
+                    <p>Code: <b>2279A</b>, Brand: <b>hp</b></p>
+                    <p>Code: <b>1242-0313</b>, Brand: <b>Sony</b></p>
+                </div>
+            </div>
+        </div>
 
         <!-- This a script to replace placeholders in the forms, NOTE element ids need to match parsed objects keys -->
         <script>
@@ -107,11 +120,20 @@
             }
         </script>
 
-        products to try: <br>
-        'hp', '259J1EA#ABB' <br>
-        'hp', 'H6R58AA'<br>
-        'hp', '2279A'<br>
-        'Sony', '1242-0313'<br>
+        <!-- Here we just toggling the help button -->
+        <script>
+            var button = document.getElementById("help_button")
+            button.addEventListener("click", toggleHelp);
+
+            function toggleHelp(){
+                var spec_block = document.getElementById("help_block");
+                if(spec_block.style.display == "none") {
+                    spec_block.style.display = "block"
+                } else {
+                    spec_block.style.display = "none"
+                }
+            }
+        </script>
     </body>
 </html>
 

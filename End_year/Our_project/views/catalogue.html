@@ -1,6 +1,7 @@
 <html>
     <header>
         <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/products.css" />
         <style>
             .colour_1 {
                 background-color: rgb(<%= user_details.color_1_r %>, <%= user_details.color_1_g %>, <%= user_details.color_1_b %>);
@@ -11,19 +12,15 @@
         </style>
     </header>
     <body>
-        
-
         <nav class="colour_1">
-            <div class="logo_url">
-                <img src=<%= user_details.logo_url %>>
-            </div>
+            <img src=<%= user_details.logo_url %>>
         </nav>
         <div id="navspacer"></div>
 
         <div id="mainContainer">
             <h2>Our products...</h2>
             <% for (let i = 0; i < user_products.length; i++){ %>
-                <div class="flex_box_3">
+                <div class="flex_box height_100">
                     <div class="image_box_catalogue">
                         <% 
                         let arryOfObjects = JSON.parse(user_products[i].product_img_urls);
@@ -32,12 +29,12 @@
                         %>
                         <img src=<%= firstImgUrl %> alt=<%= firstImgUrl %>>
                     </div>
-                    <div class="table_box_catalogue colour_2">
+                    <div class="table_box_catalogue">
                         <table>
                             <tr class="catalogue_table_row">
                                 <td class="catalogue_table_headings">Product Name:</td>
                                 <td>
-                                    <a href="/product?product_id=<%= user_products[i].product_id %>">
+                                    <a href="/product?product_id=<%= user_products[i].product_id %>&catalogue_id=<%= catalogue_id %>">
                                         <%= user_products[i].product_name %>
                                     </a>
                                 </td>

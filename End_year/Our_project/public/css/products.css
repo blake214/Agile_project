@@ -1,0 +1,148 @@
+nav img {
+    max-width: 100%;
+    margin: auto;
+    height: 3em;
+}
+
+.image_box_catalogue {
+    width:20%;
+    border-style: solid;
+    border-color:var(--color-primary);
+    border-width: 1px;
+
+}
+
+.image_box_catalogue img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.height_100 {
+    height: 100px;
+}
+
+.table_box_catalogue {
+    width:80%;
+    padding:0.2em;
+    background-color: var(--color-secondary);
+}
+
+.table_box_catalogue table {
+    width:100%;
+}
+
+.catalogue_table_headings {
+    width : 20%;
+}
+
+.catalogue_table_row, .product_table_row {
+    width: 100%;
+    font-size: var(--typography-size-small);
+}
+
+/* Products */
+.colour_secondary {
+    background-color: var(--color-secondary);
+}
+
+.border_image {
+    border: solid;
+    border-color: var(--color-secondary);
+    background-color: white;
+}
+
+.table_box_product {
+    padding: 1em;
+}
+
+.product_table_headings {
+    width : 60%;
+}
+
+.product_heading_block {
+    background-color: #777;
+    padding: 5px;
+}
+
+.product_content_block {
+    background-color: var(--color-secondary);
+    padding: 0.5em;
+}
+
+.product_heading_block_text{
+  width: 80%;
+}
+
+#specs_button{
+  background-color: var(--color-primary-medium);
+  width: 20%;
+}
+
+#specs_table {
+  border-collapse: collapse;
+  /* width: 100%; */
+  font-size: smaller;
+}
+
+#specs_table td {
+  border: 1px solid #ddd;
+  padding: 2px;
+}
+
+#specs_table tr:nth-child(even){
+  background-color: var(--color-primary-light); 
+}  
+
+/* Image slider - referenced this from w3schools.com*/
+.slideshow-container {
+    padding: 10px;
+    max-width: 100%;
+    min-height: 180px;
+    position: relative;
+    margin: auto;
+    background-color: white;
+}
+
+.slideshow-container img {
+    max-width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+}
+
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 10px;
+    color: var(--color-secondary); 
+    font-weight: bold;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    background-color: var(--color-primary-medium); 
+}
+
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* Image slider - dots */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: var(--color-primary-medium); 
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.active, .dot:hover {
+  background-color: var(--color-primary-dark); 
+}

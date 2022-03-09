@@ -1,33 +1,106 @@
 <html>
     <header>
         <link rel="stylesheet" href="css/main.css" />
-        
+        <link rel="stylesheet" href="css/products.css" />
+        <style>
+            .colour_1 {
+                background-color: rgb(<%= user_details.color_1_r %>, <%= user_details.color_1_g %>, <%= user_details.color_1_b %>);
+            }
+            .colour_2 {
+                background-color: rgb(<%= user_details.color_2_r %>, <%= user_details.color_2_g %>, <%= user_details.color_2_b %>);
+            }
+        </style>
     </header>
     <body>
         <nav class="colour_1">
-            <div class="logo_url">
-                <img src=<%= user_details.logo_url %>>
-            </div>
+            <img src=<%= user_details.logo_url %>>
         </nav>
         <div id="navspacer"></div>
 
+        <div id="mainContainer">
+            <div class="flex_box colour_secondary">
+                <div class="flex_box_50_width border_image">
+                    <div class="slideshow-container">
+                        <% let productPictureUrls = JSON.parse(product_details.product_img_urls);
+                        for (var i=0; i < productPictureUrls.length; i++){ 
+                            let imageUrl = Object.values(productPictureUrls[i])[0];%>
 
-    <h1>Product Page</h1>
-    <%= product_details.product_code %> <br>
-    <%= product_details.product_name %> <br>
-    <%= product_details.product_description_short %> <br>
-    <%= product_details.product_description_long %> <br>
-    <%= product_details.product_img_urls %> <br>
-    <%= product_details.product_category %> <br>
-    <%= product_details.product_brand %> <br>
-    <%= product_details.product_specs %> <br>
-    <div style="background-color:grey;">
-        <a href="/">index</a>
-        <a href="/user">user</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    </div>
+                            <div class="mySlides">
+                                <img style="width:100%" src=<%= imageUrl %> alt=<%= imageUrl %>>
+                            </div>
 
+                        <% } %>
+                    
+                    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                    </div>
+                    <br>
+                    
+                    <div style="text-align:center">
+                        <% for (var i=0; i < productPictureUrls.length; i++){ %>
+
+                            <span class="dot" onclick="currentSlide(<%= i+1 %>)"></span> 
+
+                        <% } %>
+                    </div>
+                    <br>
+                </div>
+
+                <div class="flex_box_50_width">
+                    <div class="table_box_product">
+                        <p><b><%= product_details.product_name %></b></p>
+                        <hr>
+                        <table>
+                            <tr class="product_table_row">
+                                <td class="product_table_headings">Brand:</td>
+                                <td><%= product_details.product_brand %></td>
+                            </tr>
+                            <tr class="product_table_row">
+                                <td>Product Code:</td>
+                                <td><%= product_details.product_code %></td>
+                            </tr>
+                            <tr class="product_table_row">
+                                <td>Category:</td>
+                                <td><%= product_details.product_category %></td>
+                            </tr>
+                          </table>
+                          <br>
+                          <p><b>Summary</b></p>
+                          <hr>
+                          <p><%= product_details.product_description_short %></p>
+                    </div>
+                </div>
+            </div>
+            <br>
+
+            <div>
+                <div class="product_heading_block colour_2">
+                    <p><b>Long Summary</b></p>
+                </div>
+                <div class="product_content_block">
+                    <p><%= product_details.product_description_long %></p>
+                </div>
+            </div>
+            <br>
+
+            <div>
+                <div class="product_heading_block colour_2 flex_box">
+                    <p class="product_heading_block_text"><b>Specs</b></p>
+                    <button id="specs_button">Show Specs</button>
+                </div>
+                <div class="product_content_block">
+                    <table id="specs_table" style="display:none">
+                        <% let arryOfObjects = JSON.parse(product_details.product_specs);
+                        for (var key in arryOfObjects) { %>
+                            <tr class="product_table_row">
+                                <td class="product_table_headings"><%- key %></td>
+                                <td><%- arryOfObjects[key] %></td>
+                            </tr>
+                        <% } %>
+                    </table>
+                </div>
+            </div>
+        </div>
 
         <footer class="colour_1" >
             <h3>Contact us</h3>
@@ -36,5 +109,51 @@
             <p><%= user_details.phone_number %></p>
             <p><%= user_details.address %></p>
         </footer>
+
+        <!-- Here we just toggling the specs table -->
+        <script>
+            var button = document.getElementById("specs_button")
+            button.addEventListener("click", toggleSpecs);
+
+            function toggleSpecs(){
+                var spec_block = document.getElementById("specs_table");
+                if(spec_block.style.display == "none") {
+                    spec_block.style.display = "block"
+                    button.innerHTML = "Hide Specs"
+                } else {
+                    spec_block.style.display = "none"
+                    button.innerHTML = "Show Specs"
+                }
+            }
+        </script>
+        <!-- Here we making the image slider - referenced this from w3schools.com-->
+        <script>
+            var slideIndex = 1;
+            showSlides(slideIndex);
+            
+            function plusSlides(n) {
+                showSlides(slideIndex += n);
+            }
+            
+            function currentSlide(n) {
+                showSlides(slideIndex = n);
+            }
+            
+            function showSlides(n) {
+                var i;
+                var slides = document.getElementsByClassName("mySlides");
+                var dots = document.getElementsByClassName("dot");
+                if (n > slides.length) {slideIndex = 1}    
+                if (n < 1) {slideIndex = slides.length}
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";  
+                }
+                for (i = 0; i < dots.length; i++) {
+                    dots[i].className = dots[i].className.replace(" active", "");
+                }
+                slides[slideIndex-1].style.display = "block";  
+                dots[slideIndex-1].className += " active";
+            }
+        </script>
     </body>
 </html>

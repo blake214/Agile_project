@@ -46,11 +46,12 @@ module.exports = function (app) {
 
     app.get("/catalogue", function (req, res) {
         // Here we getting the users details
-        // let dataset_2 = [req.session.userId];
         let dataset_2 = [req.query.catalogue];
+        var objToSend = {};
+        objToSend.catalogue_id = req.query.catalogue;
 
         dbjs.getUserDetails(db,dataset_2).then((result)=>{
-            var objToSend = {};
+            // var objToSend = {};
             objToSend.user_details = result;
             dbjs.getUserProducts(db,dataset_2).then((result)=>{
                 objToSend.user_products = result;
@@ -60,20 +61,21 @@ module.exports = function (app) {
     });
 
     app.get("/product", function (req, res) {
-        let dataset = [req.query.product_id];
-        dbjs.getProduct(db,dataset).then((result)=>{
-            res.render("product.html", {product_details: result})
+        if(!req.query.catalogue_id || !req.query.product_id) {
+            return res.send("Page not found")
+        }
+        let dataset_1 = [req.query.product_id];
+        let dataset_2 = [req.query.catalogue_id];
+        dbjs.getProduct(db,dataset_1).then((result)=>{
+            var objToSend = {};
+            objToSend.product_details = result;
+            dbjs.getUserDetails(db, dataset_2).then((result)=>{
+                objToSend.user_details = result;
+                res.render("product.html", objToSend)
+            },(result) => {console.log(result)})
+            
         },(result) => {console.log(result)})        
     });
-
-    // app.get("/product", function (req, res) {
-    //     let dataset_1 = [req.query.product_id];
-    //     let dataset_2 = [req.query.catalogue_id];
-    //     dbjs.getProduct(db,dataset_1).then((result)=>{
-    //         dbjs.getUserDetails(db, dataset_2).then
-    //         res.render("product.html", {product_details: result})
-    //     },(result) => {console.log(result)})        
-    // });
 
     // In pipeline we calling redirectUser (basically checks if user is loged in or not)
     app.get("/login", redirectUser, function (req, res) {

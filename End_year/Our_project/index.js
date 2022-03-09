@@ -23,7 +23,7 @@ const fileStorageEngine = multer.diskStorage({
     callback(null, req.session.userId + pathMod.extname(file.originalname));
   }
 });
-// const upload = multer({storage: fileStorageEngine});
+
 const upload = multer({
   storage: fileStorageEngine,
   fileFilter: function(req,file,callback){

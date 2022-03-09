@@ -10,8 +10,8 @@ function constructProductDataObject (responseData, productCode) {
   const product = {
     product_code: productCode,
     product_name: responseData.data.GeneralInfo.Title,
-    product_description_short: responseData.data.GeneralInfo.Description.MiddleDesc,
-    product_description_long: responseData.data.GeneralInfo.Description.LongDesc,
+    product_description_short: responseData.data.GeneralInfo.Description.MiddleDesc.replace(/<[^>]*>?/gm, ''),
+    product_description_long: responseData.data.GeneralInfo.Description.LongDesc.replace(/<[^>]*>?/gm, ''),
     product_img_urls: JSON.stringify(responseData.data.Gallery.map((element, index) => ({ ['img_' + index]: element.Pic }))),
     product_category: responseData.data.GeneralInfo.Category.Name.Value,
     product_brand: responseData.data.GeneralInfo.Brand,
