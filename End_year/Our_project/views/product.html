@@ -1,4 +1,17 @@
 <html>
+    <header>
+        <link rel="stylesheet" href="css/main.css" />
+        
+    </header>
+    <body>
+        <nav class="colour_1">
+            <div class="logo_url">
+                <img src=<%= user_details.logo_url %>>
+            </div>
+        </nav>
+        <div id="navspacer"></div>
+
+
     <h1>Product Page</h1>
     <%= product_details.product_code %> <br>
     <%= product_details.product_name %> <br>
@@ -14,4 +27,14 @@
         <a href="/login">Login</a>
         <a href="/register">Register</a>
     </div>
+
+
+        <footer class="colour_1" >
+            <h3>Contact us</h3>
+            <hr>
+            <p><%= user_details.company_name_long %></p>
+            <p><%= user_details.phone_number %></p>
+            <p><%= user_details.address %></p>
+        </footer>
+    </body>
 </html>

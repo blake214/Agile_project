@@ -51,13 +51,27 @@ function getUserDetails(db, dataset){
   return new Promise ((resolve,reject)=>{
       db.get(sqlquery, dataset , (err, result) => {
         if (err) reject("Error : getUserDetails");
+        // let user_details_a = {
+        //   company_name_short: null,
+        //   company_name_long: null,
+        //   phone_number: null,
+        //   address: null,
+        //   color_1: null,
+        //   color_2: null,
+        //   test: null,
+        //   logo_url: null
+        // }
         let user_details_a = {
           company_name_short: null,
           company_name_long: null,
           phone_number: null,
           address: null,
-          color_1: null,
-          color_2: null,
+          color_1_r: null,
+          color_1_g: null,
+          color_1_b: null,
+          color_2_r: null,
+          color_2_g: null,
+          color_2_b: null,
           test: null,
           logo_url: null
         }
@@ -70,7 +84,7 @@ function getUserDetails(db, dataset){
 
 /** Below returns a promise to return a users details*/
 function getUserProducts(db, dataset){
-  let sqlquery = "SELECT products.product_id, products.product_name, products.product_code FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_code = products.product_code WHERE users.id == ?";
+  let sqlquery = "SELECT products.product_id, products.product_name, products.product_brand, products.product_code, products.product_img_urls FROM catalogues JOIN users ON catalogues.user_id = users.id JOIN products ON catalogues.product_code = products.product_code WHERE users.id == ?";
   return new Promise ((resolve,reject)=>{
       db.all(sqlquery, dataset , (err, result) => {
         if (err) reject("Error : getUserProducts");

@@ -4,12 +4,48 @@ const bodyParser = require("body-parser");
 const express = require("express");
 // This our sessions library for the loggin in and out
 const session = require("express-session");
+const { path } = require("express/lib/application");
 // This the library for our database
 const sqlite3 = require('sqlite3').verbose();
 
 // Here we creating our server
 const app = express();
 const port = 8082;
+
+//////////////////////// File uploading
+const pathMod = require('path');
+const multer = require('multer');
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, './public/user_logos');
+  },
+  filename: (req, file, callback) => {
+    callback(null, req.session.userId + pathMod.extname(file.originalname));
+  }
+});
+// const upload = multer({storage: fileStorageEngine});
+const upload = multer({
+  storage: fileStorageEngine,
+  fileFilter: function(req,file,callback){
+    checkFileType(file,callback);
+  }
+});
+global.upload = upload;
+global.pathMod = pathMod;
+
+function checkFileType(file,callback){
+  // extensions allowed
+  const filetypes = /jpeg|jpg|png/;
+  const extname = filetypes.test(pathMod.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype)
+
+  if(mimetype && extname){
+    return callback(null,true)
+  } else {
+    callback("Error: only jpeg or png images")
+  }
+}
+//////////////////////// File uploading
 
 //////////////////////// Database
 // Here we referencing our databse

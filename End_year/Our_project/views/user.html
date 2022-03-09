@@ -27,23 +27,36 @@
                     <input type="submit" value="Update">
                 </form>
                 <br><hr><br>
-                <form name="user_catalogue_theme" action="/user_details" method="POST">
+                <!-- <form name="user_catalogue_theme" action="/user_details" method="POST"> -->
+
+                <form name="user_catalogue_theme" action="/user_details" method="POST" enctype="multipart/form-data">
                     <label><b>Catalogue Theme</b></label><br>
+                    <label>RRB colours: values between 0-255</label><br>
                     <br>
                     <div class="flex_box_2">
                         <div class="flex_box_50_width" >
-                            <label>Colour 1</label>
-                            <input type="text" id="color_1" name="color_1" placeholder="color 1">
+                            <label>Colour 1</label><br>
+                            <input class="color_input" type="number" id="color_1_r" name="color_1_r" placeholder="Value between 0-255" min="0" max="255" >
+                            <label>R</label><br>
+                            <input class="color_input" type="number" id="color_1_g" name="color_1_g" placeholder="Value between 0-255" min="0" max="255" >
+                            <label>G</label><br>
+                            <input class="color_input" type="number" id="color_1_b" name="color_1_b" placeholder="Value between 0-255" min="0" max="255" >
+                            <label>B</label><br>
                         </div>
                         <div class="flex_box_50_width" >
-                            <label>Colour 2</label>
-                            <input type="text" id="color_2" name="color_2" placeholder="color 2">
+                            <label>Colour 2</label><br>
+                            <input class="color_input" type="number" id="color_2_r" name="color_2_r" placeholder="Value between 0-255" min="0" max="255" >
+                            <label>R</label><br>
+                            <input class="color_input" type="number" id="color_2_g" name="color_2_g" placeholder="Value between 0-255" min="0" max="255" >
+                            <label>G</label><br>
+                            <input class="color_input" type="number" id="color_2_b" name="color_2_b" placeholder="Value between 0-255" min="0" max="255" >
+                            <label>B</label><br>
                         </div>
                     </div>
                     <!-- We will need to send a img somehow, Look into 'multer' library, there youtube video on it "Uploading an Image | Creating a REST API with Node.js" -->
                     <br>
-                    <label>Logo</label>
-                    <input type="text" id="logo_url" name="logo_url" placeholder="logo"><br>
+                    <label>Logo</label><br>
+                    <input type="file" id="logo_url" name="logo_url" accept="image/jpg, image/jpeg, image/png" class="uploadButton"><br>
                     <input type="submit" value="Update">
                 </form>
                 <br><hr><br>
@@ -70,7 +83,7 @@
                         </div>
     
                         <div class="flex_box_50_width" >
-                            <label>Product brand name</label><br>
+                            <label>Product brand</label><br>
                         <input type="text" name="product_brand" placeholder="product_brand" required><br>
                         </div>
                     </div>

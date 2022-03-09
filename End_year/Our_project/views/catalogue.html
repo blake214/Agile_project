@@ -1,25 +1,68 @@
 <html>
-    <h1>Catalogue Page</h1>
+    <header>
+        <link rel="stylesheet" href="css/main.css" />
+        <style>
+            .colour_1 {
+                background-color: rgb(<%= user_details.color_1_r %>, <%= user_details.color_1_g %>, <%= user_details.color_1_b %>);
+            }
+            .colour_2 {
+                background-color: rgb(<%= user_details.color_2_r %>, <%= user_details.color_2_g %>, <%= user_details.color_2_b %>);
+            }
+        </style>
+    </header>
+    <body>
+        
 
-    <%= user_details.company_name_short %><br>
-    <%= user_details.company_name_long %><br>
-    <%= user_details.phone_number %><br>
-    <%= user_details.address %><br>
-    <%= user_details.color_1 %><br>
-    <%= user_details.color_2 %><br>
-    <%= user_details.logo %><br>
-    <br>
-    <p>Products:</p>
-    <% for (let i = 0; i < user_products.length; i++){ %>
-        <a href="/product?product_id=<%= user_products[i].product_id %>">
-            <%= user_products[i].product_name %>, <%= user_products[i].product_code %>
-        </a><br>
-    <% } %>
+        <nav class="colour_1">
+            <div class="logo_url">
+                <img src=<%= user_details.logo_url %>>
+            </div>
+        </nav>
+        <div id="navspacer"></div>
 
-    <div style="background-color:grey;">
-        <a href="/">index</a>
-        <a href="/user">user</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    </div>
+        <div id="mainContainer">
+            <h2>Our products...</h2>
+            <% for (let i = 0; i < user_products.length; i++){ %>
+                <div class="flex_box_3">
+                    <div class="image_box_catalogue">
+                        <% 
+                        let arryOfObjects = JSON.parse(user_products[i].product_img_urls);
+                        let firstImg = arryOfObjects[0];
+                        let firstImgUrl = Object.values(firstImg)[0]
+                        %>
+                        <img src=<%= firstImgUrl %> alt=<%= firstImgUrl %>>
+                    </div>
+                    <div class="table_box_catalogue colour_2">
+                        <table>
+                            <tr class="catalogue_table_row">
+                                <td class="catalogue_table_headings">Product Name:</td>
+                                <td>
+                                    <a href="/product?product_id=<%= user_products[i].product_id %>">
+                                        <%= user_products[i].product_name %>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr class="catalogue_table_row">
+                                <td>Product Brand:</td>
+                                <td><%= user_products[i].product_brand %></td>
+                            </tr>
+                            <tr class="catalogue_table_row">
+                                <td>Product Code:</td>
+                                <td><%= user_products[i].product_code %></td>
+                            </tr>
+                          </table>
+                    </div>
+                </div>
+                <br>
+            <% } %>
+        </div>
+
+        <footer class="colour_1" >
+            <h3>Contact us</h3>
+            <hr>
+            <p><%= user_details.company_name_long %></p>
+            <p><%= user_details.phone_number %></p>
+            <p><%= user_details.address %></p>
+        </footer>
+    </body>
 </html>

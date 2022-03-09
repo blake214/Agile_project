@@ -1,3 +1,5 @@
+const removeUploadedFiles = require("multer/lib/remove-uploaded-files");
+
 module.exports = function (app) {
     ////////////////////// Middleware functions
     /** Here we redirect user back to login page
@@ -63,6 +65,16 @@ module.exports = function (app) {
             res.render("product.html", {product_details: result})
         },(result) => {console.log(result)})        
     });
+
+    // app.get("/product", function (req, res) {
+    //     let dataset_1 = [req.query.product_id];
+    //     let dataset_2 = [req.query.catalogue_id];
+    //     dbjs.getProduct(db,dataset_1).then((result)=>{
+    //         dbjs.getUserDetails(db, dataset_2).then
+    //         res.render("product.html", {product_details: result})
+    //     },(result) => {console.log(result)})        
+    // });
+
     // In pipeline we calling redirectUser (basically checks if user is loged in or not)
     app.get("/login", redirectUser, function (req, res) {
         res.render("login.html")
@@ -132,7 +144,8 @@ module.exports = function (app) {
             res.redirect('/login')
         })
     });
-    app.post("/user_details", redirectLogin, function (req, res) {
+
+    app.post("/user_details", redirectLogin, upload.single('logo_url'), function (req, res) {
         let sqlQuery_concatenation = "";
         let somethingToCchanged = false;
         /**Below we checking if feilds have been changed
@@ -159,19 +172,42 @@ module.exports = function (app) {
             sqlQuery_concatenation += "company_name_long = '" + req.body.company_name_long + "'";
             somethingToCchanged = true;
         };
-        if (req.body.color_1) {
+
+        if (req.body.color_1_r) {
             if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
-            sqlQuery_concatenation += "color_1 = '" + req.body.color_1 + "'";
+            sqlQuery_concatenation += "color_1_r = '" + req.body.color_1_r + "'";
             somethingToCchanged = true;
         };
-        if (req.body.color_2) {
+        if (req.body.color_1_g) {
             if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
-            sqlQuery_concatenation += "color_2 = '" + req.body.color_2 + "'";
+            sqlQuery_concatenation += "color_1_g = '" + req.body.color_1_g + "'";
             somethingToCchanged = true;
         };
-        if (req.body.logo_url) {
+        if (req.body.color_1_b) {
             if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
-            sqlQuery_concatenation += "logo_url = '" + req.body.logo_url + "'";
+            sqlQuery_concatenation += "color_1_b = '" + req.body.color_1_b + "'";
+            somethingToCchanged = true;
+        };
+        
+        if (req.body.color_2_r) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "color_2_r = '" + req.body.color_2_r + "'";
+            somethingToCchanged = true;
+        };
+        if (req.body.color_2_g) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "color_2_g = '" + req.body.color_2_g + "'";
+            somethingToCchanged = true;
+        };
+        if (req.body.color_2_b) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "color_2_b = '" + req.body.color_2_b + "'";
+            somethingToCchanged = true;
+        };
+
+        if (req.file) {
+            if (sqlQuery_concatenation != "") sqlQuery_concatenation += ", ";
+            sqlQuery_concatenation += "logo_url = 'user_logos/" + req.session.userId + pathMod.extname(req.file.originalname).toLowerCase() + "'";
             somethingToCchanged = true;
         };
 
