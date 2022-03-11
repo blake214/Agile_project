@@ -74,11 +74,12 @@
             <br>
 
             <div>
-                <div class="product_heading_block colour_2">
-                    <p><b>Long Summary</b></p>
+                <div class="product_heading_block colour_2 flex_box">
+                    <p class="product_heading_block_text"><b>Long Summary</b></p>
+                    <button id="summary_button">Show Summary</button>
                 </div>
                 <div class="product_content_block">
-                    <p><%= product_details.product_description_long %></p>
+                    <p id="long_summary_block" style="display:none"><%= product_details.product_description_long %></p>
                 </div>
             </div>
             <br>
@@ -86,7 +87,7 @@
             <div>
                 <div class="product_heading_block colour_2 flex_box">
                     <p class="product_heading_block_text"><b>Specs</b></p>
-                    <button id="specs_button">Show Specs</button>
+                    <button id="specs_button" >Show Specs</button>
                 </div>
                 <div class="product_content_block">
                     <table id="specs_table" style="display:none">
@@ -101,7 +102,7 @@
                 </div>
             </div>
         </div>
-
+        <div id="footerspacer"></div>
         <footer class="colour_1" >
             <h3>Contact us</h3>
             <hr>
@@ -123,6 +124,22 @@
                 } else {
                     spec_block.style.display = "none"
                     button.innerHTML = "Show Specs"
+                }
+            }
+        </script>
+        <!-- Here we just toggling the long summary -->
+        <script>
+            var button = document.getElementById("summary_button")
+            button.addEventListener("click", toggleSummary);
+
+            function toggleSummary(){
+                var spec_block = document.getElementById("long_summary_block");
+                if(spec_block.style.display == "none") {
+                    spec_block.style.display = "block"
+                    button.innerHTML = "Hide Summary"
+                } else {
+                    spec_block.style.display = "none"
+                    button.innerHTML = "Show Summary"
                 }
             }
         </script>

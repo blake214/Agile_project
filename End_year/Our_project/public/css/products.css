@@ -74,14 +74,13 @@ nav img {
   width: 80%;
 }
 
-#specs_button{
+#specs_button, #summary_button{
   background-color: var(--color-primary-medium);
   width: 20%;
 }
 
 #specs_table {
   border-collapse: collapse;
-  /* width: 100%; */
   font-size: smaller;
 }
 

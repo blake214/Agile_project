@@ -51,16 +51,6 @@ function getUserDetails(db, dataset){
   return new Promise ((resolve,reject)=>{
       db.get(sqlquery, dataset , (err, result) => {
         if (err) reject("Error : getUserDetails");
-        // let user_details_a = {
-        //   company_name_short: null,
-        //   company_name_long: null,
-        //   phone_number: null,
-        //   address: null,
-        //   color_1: null,
-        //   color_2: null,
-        //   test: null,
-        //   logo_url: null
-        // }
         let user_details_a = {
           company_name_short: null,
           company_name_long: null,

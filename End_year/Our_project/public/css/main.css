@@ -5,7 +5,6 @@
     --color-primary-light: #D0D0D0;
     --color-primary-medium: #C0C0C0;
     --color-primary-dark: #777;
-
     --color-secondary: #f2f2f2;
   
     /* TYPOGRAPHY */
@@ -33,6 +32,10 @@ footer{
     background-color:var(--color-primary-dark);
     text-align: center;
     padding: 0.5em;
+}
+
+#footerspacer {
+    height: 5em;
 }
 
 nav {
@@ -69,8 +72,7 @@ nav, #navspacer {
     z-index: 6;
 }
 #tip_bar_container {
-    width:300px;
-    margin: auto;
+    width:250px;
     background-color: orange;
     font-size: var(--typography-size-small);
 }

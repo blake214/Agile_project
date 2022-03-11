@@ -1,5 +1,3 @@
-const removeUploadedFiles = require("multer/lib/remove-uploaded-files");
-
 module.exports = function (app) {
     ////////////////////// Middleware functions
     /** Here we redirect user back to login page
@@ -26,7 +24,6 @@ module.exports = function (app) {
 
     app.get("/user", redirectLogin, function (req, res) {
         let dataset_1 = [req.session.userId];
-
         // Here we getting the username relating to the id in the databse
         dbjs.getUserName(db, dataset_1).then((result)=>{
             var objToSend = {};
@@ -49,9 +46,7 @@ module.exports = function (app) {
         let dataset_2 = [req.query.catalogue];
         var objToSend = {};
         objToSend.catalogue_id = req.query.catalogue;
-
         dbjs.getUserDetails(db,dataset_2).then((result)=>{
-            // var objToSend = {};
             objToSend.user_details = result;
             dbjs.getUserProducts(db,dataset_2).then((result)=>{
                 objToSend.user_products = result;
@@ -73,7 +68,6 @@ module.exports = function (app) {
                 objToSend.user_details = result;
                 res.render("product.html", objToSend)
             },(result) => {console.log(result)})
-            
         },(result) => {console.log(result)})        
     });
 

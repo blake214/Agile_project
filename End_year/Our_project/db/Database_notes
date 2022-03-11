@@ -8,20 +8,6 @@ id INTEGER PRIMARY KEY AUTOINCREMENT,
 username VARCHAR(10) NOT NULL UNIQUE,
 password VARCHAR(10) NOT NULL);
 
-INSERT INTO users (username, password)VALUES('Tim','pass');
-INSERT INTO users (username, password)VALUES('Blake','pass');
-
--- CREATE TABLE user_details (
--- id INTEGER PRIMARY KEY,
--- company_name_short VARCHAR(10),
--- company_name_long VARCHAR(10),
--- phone_number VARCHAR(10),
--- address VARCHAR(10),
--- color_1 VARCHAR(10),
--- color_2 VARCHAR(10),
--- logo_url VARCHAR(10),
--- FOREIGN KEY(id) REFERENCES users(id));
-
 CREATE TABLE user_details (
 id INTEGER PRIMARY KEY,
 company_name_short VARCHAR(10),
@@ -36,7 +22,6 @@ color_2_g INTEGER,
 color_2_b INTEGER,
 logo_url TEXT,
 FOREIGN KEY(id) REFERENCES users(id));
-
 
 CREATE TABLE products (
 product_id INTEGER PRIMARY KEY AUTOINCREMENT,

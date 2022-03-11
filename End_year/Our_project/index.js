@@ -7,14 +7,19 @@ const session = require("express-session");
 const { path } = require("express/lib/application");
 // This the library for our database
 const sqlite3 = require('sqlite3').verbose();
+// This the librarys for getting user logos
+const pathMod = require('path');
+const multer = require('multer');
+// This our library for API request to IceCat
+const api = require('./api/api')
+// This our library for database querying
+const dbjs = require('./db/db')
 
 // Here we creating our server
 const app = express();
 const port = 8082;
 
 //////////////////////// File uploading
-const pathMod = require('path');
-const multer = require('multer');
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, './public/user_logos');
@@ -30,8 +35,6 @@ const upload = multer({
     checkFileType(file,callback);
   }
 });
-global.upload = upload;
-global.pathMod = pathMod;
 
 function checkFileType(file,callback){
   // extensions allowed
@@ -39,11 +42,8 @@ function checkFileType(file,callback){
   const extname = filetypes.test(pathMod.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype)
 
-  if(mimetype && extname){
-    return callback(null,true)
-  } else {
-    callback("Error: only jpeg or png images")
-  }
+  if(mimetype && extname) return callback(null,true);
+  else callback("Error: only jpeg or png images");
 }
 //////////////////////// File uploading
 
@@ -53,19 +53,7 @@ const db = new sqlite3.Database('./db/easy-catalogue.db', sqlite3.OPEN_READWRITE
     if (err) console.error(err.message);
     else console.log('Connected to the database.');
   });
-// Here we make our database global so main.js can see it
-global.db = db;
 //////////////////////// Database
-
-//////////////////////// API stuff
-// This our function for the API requests to icecat
-const api = require('./api/api')
-// These are our database querying functions
-const dbjs = require('./db/db')
-// Below we just making them global
-global.api = api;
-global.dbjs = dbjs;
-//////////////////////// API stuff
 
 //////////////////////// Sessions
 // Configure our sessions
@@ -96,6 +84,14 @@ app.use(bodyParser.urlencoded({
 // Allows the html pages to load external files as css and js
 app.use(express.static(__dirname + '/public'));
 //////////////////////// External resources
+
+//////////////////////// Making methods global
+global.db = db;
+global.api = api;
+global.dbjs = dbjs;
+global.upload = upload;
+global.pathMod = pathMod;
+//////////////////////// Making methods global
 
 //////////////////////// Server
 app.listen(port, () => console.log(`Easy Catalogue is listening on port ${port}!`));
